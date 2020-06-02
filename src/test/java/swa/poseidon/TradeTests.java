@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import swa.poseidon.domain.Trade;
+import swa.poseidon.model.Trade;
 import swa.poseidon.repositories.TradeRepository;
 
 import java.util.List;

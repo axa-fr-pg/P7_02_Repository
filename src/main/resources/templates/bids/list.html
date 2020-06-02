@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <title>Home</title>
-<link rel="stylesheet" href="../../css/bootstrap.min.css" >
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
 	<div class="row">
 		<div class="col-6">
-			<a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
+			<a href="/bids/list">Bids</a>&nbsp;|&nbsp;
 			<a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
 			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
 			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
@@ -23,21 +23,34 @@
 			</form>
 		</div>
 	</div>
-	<div class="row"><h2>Bid List</h2></div>
+	<div class="row"><h2>Bids</h2></div>
 	<div class="row">
-		<a href="/bidList/add" class="btn btn-primary btn-sm">Add New</a>
+		<a href="/bids/add" class="btn btn-primary btn-sm">Add New</a>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th>Id</th>
 					<th>Account</th>
 					<th>Type</th>
-					<th>Bid Quantity</th>
+					<th>Bid quantity</th>
 					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
-				<!-- TODO: Show all Bids to the table, the Action column will have Edit & Delete buttons -->
+            <tr th:each ="bid : ${bids}">
+               <td th:utext="${bid.bidId}">...</td>
+               <td th:utext="${bid.account}">...</td>
+               <td th:utext="${bid.type}">...</td>
+               <td th:utext="${bid.bidQuantity}">...</td>
+               <td>
+               		<form action="/bids/update" method="get">
+    					<button name="bidId" th:value="${bid.bidId}">Edit</button>
+					</form>
+               		<form action="/bids/delete" method="delete">
+    					<button name="delete" th:value="${bid.bidId}">Delete</button>
+					</form>
+               </td>
+            </tr>
 			</tbody>
 		</table>
 	</div>

@@ -2,14 +2,14 @@ drop database if exists poseidon_prod;
 create database poseidon_prod;
 use poseidon_prod;
 
-CREATE TABLE BidList (
-  BidListId tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE bid (
+  bid_id int NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
-  bidQuantity DOUBLE,
-  askQuantity DOUBLE,
-  bid DOUBLE ,
-  ask DOUBLE,
+  bid_quantity DOUBLE,
+  ask_quantity DOUBLE,
+  bid_amount DOUBLE ,
+  ask_amount DOUBLE,
   benchmark VARCHAR(125),
   bidListDate TIMESTAMP,
   commentary VARCHAR(125),
@@ -100,5 +100,9 @@ CREATE TABLE Users (
 
 insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN");
 insert into Users(fullname, username, password, role) values("User", "user", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "USER");
+
+drop database if exists poseidon_test;
+create database poseidon_test;
+use poseidon_test;
 
 commit;

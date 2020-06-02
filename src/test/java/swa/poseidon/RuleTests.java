@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import swa.poseidon.domain.RuleName;
+import swa.poseidon.model.RuleName;
 import swa.poseidon.repositories.RuleNameRepository;
 
 import java.util.List;

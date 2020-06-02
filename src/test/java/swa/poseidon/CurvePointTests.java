@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import swa.poseidon.domain.CurvePoint;
+import swa.poseidon.model.CurvePoint;
 import swa.poseidon.repositories.CurvePointRepository;
 
 import java.util.List;

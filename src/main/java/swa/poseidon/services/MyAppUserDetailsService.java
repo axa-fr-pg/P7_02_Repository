@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import swa.poseidon.domain.User;
+import swa.poseidon.model.User;
 import swa.poseidon.repositories.UserRepository;
 
 import java.util.Arrays;

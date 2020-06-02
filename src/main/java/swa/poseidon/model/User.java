@@ -1,4 +1,4 @@
-package swa.poseidon.domain;
+package swa.poseidon.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import swa.poseidon.domain.CurvePoint;
+import swa.poseidon.model.CurvePoint;
 
 import javax.validation.Valid;
 
