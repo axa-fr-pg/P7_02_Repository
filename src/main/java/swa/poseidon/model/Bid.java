@@ -1,7 +1,5 @@
 package swa.poseidon.model;
 
-import org.springframework.beans.factory.annotation.Required;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import javax.annotation.Generated;
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -25,17 +25,29 @@ import java.util.Date;
 @AllArgsConstructor
 public class Bid {
     // TODO: Map columns in data table BIDLIST with corresponding java fields
-	@Id	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer bidId;
 	
+	@NotBlank
 	String account;
-	String type;
-	Integer bidQuantity;
-	Integer askQuantity;
 	
+	@NotBlank
+	String type;
+	
+	@NotNull
+	@Positive
+	@Digits(integer=8, fraction=1)
+	BigDecimal bidQuantity;
+	
+	@Digits(integer=8, fraction=1)
+	BigDecimal askQuantity;
+	
+	@Digits(integer=8, fraction=2)
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal bidAmount;
 	
+	@Digits(integer=8, fraction=2)
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal askAmount;
 	

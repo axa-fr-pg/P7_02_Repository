@@ -1,18 +1,10 @@
 package swa.poseidon.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -26,12 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
-import swa.poseidon.services.BidService;
 import swa.poseidon.services.BidServiceTest;
 
 @SpringBootTest
@@ -42,14 +30,8 @@ public class BidControllerIT {
 	private MockMvc mvc;
 	
 	@Autowired
-	private ObjectMapper objectMapper;
-
-	@Autowired
 	private BidRepository bidRepository;
 	
-	@Autowired
-	private BidService bidService;
-
 	private Bid addBidForTest(int index)
 	{
 		return bidRepository.save(BidServiceTest.newBidForTest(index));

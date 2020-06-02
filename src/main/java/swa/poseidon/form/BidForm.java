@@ -1,5 +1,7 @@
 package swa.poseidon.form;
 
+import java.math.BigDecimal;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +20,7 @@ public class BidForm
 	Integer bidId;	
 	String account;
 	String type;
-	Integer bidQuantity;
+	BigDecimal bidQuantity;
 	
 	public BidForm(Bid b)
 	{

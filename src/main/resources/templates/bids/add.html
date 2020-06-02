@@ -14,10 +14,37 @@
 	</div>
 
 	<div class="row">
-		<form action="#" th:action="@{/bidList/validate}" th:object="${bidList}" method="post" class="form-horizontal" style="width: 100%">
+		<form action="#" th:action="@{/bids/validate}" th:object="${bid}" method="post" class="form-horizontal" style="width: 100%">
 			<!--
 			TODO: Create a form to input the values of Bid, there are 2 buttons: Save data and Cancel to the list Bid
 			 -->
+		  <div>
+		     <label>Account</label>
+		     <br>
+		     <input type="text" th:field="*{account}">
+		     <br>
+		 	 <span class="text-danger" th:if="${#fields.hasErrors('account')}" th:errors="*{account}">...</span>
+		  </div>
+		  <br>
+		  <div>
+		     <label>Type</label>
+		     <br>
+ 		     <input type="text" th:field="*{type}">
+		     <br>
+		     <span class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">...</span>
+		  </div>
+		  <br>
+		  <div>
+		     <label>Bid quantity</label>
+		     <br>
+		     <input type="text" th:field="*{bidQuantity}">
+		     <br>
+		     <span class="text-danger" th:if="${#fields.hasErrors('bidQuantity')}" th:errors="*{bidQuantity}">...</span>
+		  </div>
+		  <div>
+		  	<a href="/bids/list">Cancel</a>&nbsp;|&nbsp;
+		    <button>Save data</button>
+		  </div>
 		</form>
 	</div>
 

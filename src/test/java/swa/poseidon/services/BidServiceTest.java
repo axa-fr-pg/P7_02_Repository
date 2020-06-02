@@ -35,10 +35,13 @@ public class BidServiceTest {
 
 	static public Bid newBidForTest(int index) 
 	{
-		return new Bid (index, "account"+index, "type"+index, index*11, index*12, new BigDecimal(13.0 * index),
-				new BigDecimal(14.0 * index),	"benchmark"+index, new Date(15*index), "comment"+index, 
-				"security"+index, 16*index, "trader"+index, "book"+index, "creationName"+index, new Date(17*index),
-				"revisionName"+index, new Date(18*index), "dealName"+index, "dealType"+index,	19, "side"+index);
+		return new Bid (index, "account"+index, "type"+index, 
+				new BigDecimal(index*11), new BigDecimal(index*12), 
+				new BigDecimal(13.0 * index), new BigDecimal(14.0 * index),	
+				"benchmark"+index, new Date(15*index), "comment"+index, 
+				"security"+index, 16*index, "trader"+index, "book"+index, "creationName"+index, 
+				new Date(17*index), "revisionName"+index, new Date(18*index), 
+				"dealName"+index, "dealType"+index,	19, "side"+index);
 	}
 		
 	@Test

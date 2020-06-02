@@ -43,12 +43,8 @@
                <td th:utext="${bid.type}">...</td>
                <td th:utext="${bid.bidQuantity}">...</td>
                <td>
-               		<form action="/bids/update" method="get">
-    					<button name="bidId" th:value="${bid.bidId}">Edit</button>
-					</form>
-               		<form action="/bids/delete" method="delete">
-    					<button name="delete" th:value="${bid.bidId}">Delete</button>
-					</form>
+               		<a href="@{/bids/update/{id}(id=${bid.bidId})}">Edit</a>&nbsp;|&nbsp;
+					<a href="/bids/delete/{id}(id=${bid.bidId})}" data-method="delete">Delete</a>
                </td>
             </tr>
 			</tbody>
