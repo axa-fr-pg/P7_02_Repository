@@ -11,5 +11,5 @@ public interface BidService {
 
 	public List<BidForm> getAll();
 
-	public Bid save(@Valid Bid bid);
+	public Bid add(@Valid Bid bid);
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,20 +39,19 @@ public class BidController
     }
 
     @GetMapping("/bids/add")
-    public String add(Bid bid) 
+    public String getRequestAdd(Bid bid) 
     {    	
         return "bids/add";
     }
 
-    @PostMapping("/bids/validate")
-    public String validate(@Valid Bid bid, BindingResult result, Model model) 
+    @PostMapping("/bids/add")
+    public String postDataAdd(@Valid Bid bid, BindingResult result, Model model) 
     {
-        // TODO: check data valid and save to db, after saving return bid list
         if (result.hasErrors()) 
         {        	
             return "/bids/add";
         }
-        bidService.save(bid);
+        bidService.add(bid);
         return "redirect:/bids/list";
     }
 
@@ -73,17 +73,4 @@ public class BidController
         // TODO: Find Bid by Id and delete the bid, return to Bid list
         return "redirect:/bidList/list";
     }
-/*    
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-      MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }*/
 }

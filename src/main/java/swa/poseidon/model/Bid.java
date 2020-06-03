@@ -77,5 +77,18 @@ public class Bid {
 	String dealName;
 	String dealType;
 	Integer sourceListId;
-	String side;	
+	String side;
+
+	public Bid (Bid b)
+	{
+		new Bid(getAccount(), b.getType(), b.getBidQuantity());
+	}
+
+	public Bid (String account, String type, BigDecimal bidQuantity)
+	{
+		// id set to 0
+		this.account=account;
+		this.type=type;
+		this.bidQuantity=bidQuantity;
+	}
 }
