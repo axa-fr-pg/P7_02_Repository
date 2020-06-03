@@ -33,7 +33,7 @@ public class BidController
     @GetMapping("/bids/list")
     public String list(Model model)
     {
-    	List<BidForm> bidFormList = bidService.getAll();
+    	List<BidForm> bidFormList = bidService.readAll();
     	model.addAttribute("bids", bidFormList);
         return "/bids/list";
     }
@@ -51,7 +51,7 @@ public class BidController
         {        	
             return "/bids/add";
         }
-        bidService.add(bid);
+        bidService.create(bid);
         return "redirect:/bids/list";
     }
 

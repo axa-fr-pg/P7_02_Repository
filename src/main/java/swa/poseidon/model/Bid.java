@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
@@ -38,9 +37,11 @@ public class Bid {
 	@NotNull
 	@Positive
 	@Digits(integer=8, fraction=1)
+	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal bidQuantity;
 	
 	@Digits(integer=8, fraction=1)
+	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal askQuantity;
 	
 	@Digits(integer=8, fraction=2)
