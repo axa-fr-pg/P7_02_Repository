@@ -13,6 +13,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -23,7 +26,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bid {
-    // TODO: Map columns in data table BIDLIST with corresponding java fields
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer bidId;
@@ -54,8 +56,13 @@ public class Bid {
 	
 	String benchmark;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	Date bidDate;
+	/*
+	 * This date is of no use (we already have creation & revision dates
+	 *
+	 *	@Column(columnDefinition = "TIMESTAMP")
+	 *	Date bidDate;
+	 *
+	 */
 	
 	String comment;
 	String security;
@@ -67,12 +74,14 @@ public class Bid {
 	String book;
 	String creationName;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@CreationTimestamp
+	@Column(columnDefinition = "TIMESTAMP")
 	Date creationDate;
 	
 	String revisionName;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@UpdateTimestamp
+	@Column(columnDefinition = "TIMESTAMP")
 	Date revisionDate;
 	
 	String dealName;
@@ -82,7 +91,7 @@ public class Bid {
 
 	public Bid (String account, String type, BigDecimal bidQuantity)
 	{
-		// id set to 0
+		// bidId set to 0
 		this.account=account;
 		this.type=type;
 		this.bidQuantity=bidQuantity;
