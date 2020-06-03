@@ -80,11 +80,6 @@ public class Bid {
 	Integer sourceListId;
 	String side;
 
-	public Bid (Bid b)
-	{
-		new Bid(getAccount(), b.getType(), b.getBidQuantity());
-	}
-
 	public Bid (String account, String type, BigDecimal bidQuantity)
 	{
 		// id set to 0
