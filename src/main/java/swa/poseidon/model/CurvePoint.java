@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import swa.poseidon.form.CurvePointForm;
 import swa.poseidon.services.EntityModelService;
 
 import javax.persistence.*;
@@ -24,7 +25,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CurvePoint {
+public class CurvePoint implements EntityModelService<CurvePointForm>
+{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer curvePointId;
@@ -56,5 +58,17 @@ public class CurvePoint {
 		this.curveId=curveId;
 		this.term=term;
 		this.value=value;
+	}
+
+	@Override
+	public void setId(Integer id) 
+	{
+		setCurvePointId(id);
+	}
+
+	@Override
+	public CurvePointForm newForm() 
+	{
+		return new CurvePointForm(this);
 	}
 }

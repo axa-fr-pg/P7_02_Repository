@@ -32,7 +32,7 @@ import org.springframework.ui.Model;
 import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
-import swa.poseidon.services.BidServiceTest;
+import swa.poseidon.services.EntityCrudServiceTest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -46,7 +46,7 @@ public class BidControllerIT {
 	
 	private Bid addBidForTest(int index)
 	{
-		return bidRepository.save(BidServiceTest.newValidBidForTest(index));
+		return bidRepository.save(EntityCrudServiceTest.newValidBidForTest(index));
 	}
 	
 	@BeforeEach
@@ -95,7 +95,7 @@ public class BidControllerIT {
 		// GIVEN
 		Bid b1 =  addBidForTest(1);
 		Bid b2 =  addBidForTest(2);
-		Bid b3 =  BidServiceTest.newValidBidForTest(3);
+		Bid b3 =  EntityCrudServiceTest.newValidBidForTest(3);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
 			.post("/bids/add")
 			.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)

@@ -21,14 +21,13 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class BidServiceTest {
-
+public class EntityCrudServiceTest // Tests with BidService are enough to validate EntityCrudService
+{
 	@MockBean
 	private BidRepository bidRepository;
 	
 	@Autowired
 	private BidService bidService;
-
 	
 	static public Bid newValidBidForTest(int index) 
 	{
@@ -55,6 +54,21 @@ public class BidServiceTest {
 		assertEquals(b2.getAccount(), bf2.getAccount());
 		assertEquals(b3.getType(), bf3.getType());
 		assertEquals(b1.getBidQuantity(), bf1.getBidQuantity());
+	}
+	
+	@Test
+	public void givenNewBid_create_generatesNewId()
+	{
+		// GIVEN
+		Bid b1 =  newValidBidForTest(1);
+		Bid b1Saved =  new Bid(b1.getAccount(), b1.getType(), b1.getBidQuantity());
+		b1Saved.setBidId(1);
+		when(bidRepository.save(b1)).thenReturn(b1Saved);
+		// WHEN
+		Bid result = bidService.create(b1);
+		// THEN
+		assertNotNull(result);
+		assertEquals(b1Saved.getBidId(), result.getBidId());
 	}
 	
 	@Test

@@ -27,7 +27,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bid implements EntityModelService
+public class Bid implements EntityModelService<BidForm>
 {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -124,7 +124,7 @@ public class Bid implements EntityModelService
 	}
 
 	@Override
-	public Object newForm() {
+	public BidForm newForm() {
 		return new BidForm(this);
 	}
 }

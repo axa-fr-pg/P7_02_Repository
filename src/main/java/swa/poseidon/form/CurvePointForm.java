@@ -22,7 +22,7 @@ public class CurvePointForm
 	BigDecimal term;
 	BigDecimal value;
 
-	CurvePointForm(CurvePoint cv)
+	public CurvePointForm(CurvePoint cv)
 	{
 		curvePointId=cv.getCurvePointId();
 		curveId=cv.getCurveId();

@@ -1,14 +1,8 @@
 package swa.poseidon.services;
 
+import swa.poseidon.form.CurvePointForm;
 import swa.poseidon.model.CurvePoint;
 
-public interface CurvePointService 
+public interface CurvePointService extends EntityCrudService<CurvePoint,CurvePointForm>
 {
-	public CurvePoint create(CurvePoint curvePoint);
-	
-	public CurvePoint read(Integer curvePointId);
-	
-	public CurvePoint update(CurvePoint curvePoint);
-	
-	public boolean delete(Integer curvePointId);
 }
