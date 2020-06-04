@@ -3,13 +3,11 @@ package swa.poseidon.model;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.CurvePointForm;
-import swa.poseidon.services.EntityModelService;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -24,8 +22,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class CurvePoint implements EntityModelService<CurvePointForm>
+public class CurvePoint implements EntityCore<CurvePointForm>
 {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

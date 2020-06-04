@@ -5,6 +5,6 @@ import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 
 @Service
-public class BidServiceImpl extends EntityCrudServiceImpl<Bid,BidForm> implements BidService 
+public class BidServiceImpl extends EntityServiceImpl<Bid,BidForm> implements BidService 
 {
 }

@@ -1,13 +1,11 @@
 package swa.poseidon.model;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.BidForm;
-import swa.poseidon.services.EntityModelService;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -26,8 +24,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Bid implements EntityModelService<BidForm>
+public class Bid implements EntityCore<BidForm>
 {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

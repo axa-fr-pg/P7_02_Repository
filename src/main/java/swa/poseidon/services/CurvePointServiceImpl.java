@@ -5,6 +5,6 @@ import swa.poseidon.form.CurvePointForm;
 import swa.poseidon.model.CurvePoint;
 
 @Service
-public class CurvePointServiceImpl extends EntityCrudServiceImpl<CurvePoint,CurvePointForm> implements CurvePointService 
+public class CurvePointServiceImpl extends EntityServiceImpl<CurvePoint,CurvePointForm> implements CurvePointService 
 {
 }

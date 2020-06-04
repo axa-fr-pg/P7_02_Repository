@@ -6,21 +6,18 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.RatingForm;
-import swa.poseidon.services.EntityModelService;
 
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Rating implements EntityModelService<RatingForm>
+public class Rating implements EntityCore<RatingForm>
 {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

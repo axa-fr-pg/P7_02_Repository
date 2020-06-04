@@ -6,6 +6,6 @@ import swa.poseidon.form.RuleForm;
 import swa.poseidon.model.Rule;
 
 @Service
-public class RuleServiceImpl extends EntityCrudServiceImpl<Rule,RuleForm> implements RuleService 
+public class RuleServiceImpl extends EntityServiceImpl<Rule,RuleForm> implements RuleService 
 {
 }

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class EntityCrudServiceTest // Tests with BidService are enough to validate EntityCrudService
+public class EntityServiceTest
 {
 	@MockBean
 	private BidRepository bidRepository;

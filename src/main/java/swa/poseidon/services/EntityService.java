@@ -2,7 +2,7 @@ package swa.poseidon.services;
 
 import java.util.List;
 
-public interface EntityCrudService<E,F> 
+public interface EntityService<E,F> 
 {
 	public List<F> readAll();
 

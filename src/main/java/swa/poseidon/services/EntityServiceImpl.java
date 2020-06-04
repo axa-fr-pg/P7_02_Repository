@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import swa.poseidon.model.EntityCore;
+
 @Transactional
-public abstract class EntityCrudServiceImpl<E,F> implements EntityCrudService<E,F>
+public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 {
 	@Autowired JpaRepository<E, Integer> repository;
 	
@@ -20,8 +22,8 @@ public abstract class EntityCrudServiceImpl<E,F> implements EntityCrudService<E,
 		for (E e : eList) 
 		{
 			@SuppressWarnings("unchecked")
-			EntityModelService<F> ems = (EntityModelService<F>) e;
-			F f = ems.newForm();
+			EntityCore<F> c = (EntityCore<F>) e;
+			F f = c.newForm();
 			fList.add(f);
 		}
 		return fList;
@@ -31,7 +33,7 @@ public abstract class EntityCrudServiceImpl<E,F> implements EntityCrudService<E,
 	public E create(E e) 
 	{
 		@SuppressWarnings("unchecked")
-		EntityModelService<F> ems = (EntityModelService<F>) e;
+		EntityCore<F> ems = (EntityCore<F>) e;
 		ems.setId(0);
 		return repository.save(e);
 	}
