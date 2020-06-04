@@ -30,7 +30,6 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	
 	@NotNull
 	@Positive
-	@Column(columnDefinition = "TINYINT")
 	Integer curveId;
 	
 	@Digits(integer=8, fraction=1)

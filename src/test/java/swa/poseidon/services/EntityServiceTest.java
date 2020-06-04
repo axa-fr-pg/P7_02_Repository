@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class EntityServiceTest
+public class EntityServiceTest // generic service --> can be tested with one entity
 {
 	@MockBean
 	private BidRepository bidRepository;
