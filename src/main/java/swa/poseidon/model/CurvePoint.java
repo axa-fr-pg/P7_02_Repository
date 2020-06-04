@@ -33,10 +33,6 @@ public class CurvePoint {
 	@Column(columnDefinition = "TINYINT")
 	Integer curveId;
 	
-	@UpdateTimestamp
-	@Column(columnDefinition = "TIMESTAMP")
-	Date revisionDate;
-	
 	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal term;
@@ -45,6 +41,10 @@ public class CurvePoint {
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal value;
 
+	@UpdateTimestamp
+	@Column(columnDefinition = "TIMESTAMP")
+	Date revisionDate;
+	
 	@CreationTimestamp
 	@Column(columnDefinition = "TIMESTAMP")
 	Date creationDate;
