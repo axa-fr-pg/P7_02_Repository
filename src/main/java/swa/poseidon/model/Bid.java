@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import swa.poseidon.form.BidForm;
+import swa.poseidon.services.EntityModelService;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -25,15 +27,18 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bid {
+public class Bid implements EntityModelService
+{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer bidId;
 	
 	@NotBlank
+	@Column(length = 30)
 	String account;
 	
 	@NotBlank
+	@Column(length = 30)
 	String type;
 	
 	@NotNull
@@ -54,6 +59,7 @@ public class Bid {
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal askAmount;
 	
+	@Column(length = 125)
 	String benchmark;
 
 	/*
@@ -64,29 +70,44 @@ public class Bid {
 	 *
 	 */
 	
+	@Column(length = 125)
 	String comment;
+
+	@Column(length = 125)
 	String security;
 	
 	@Column(columnDefinition = "TINYINT")
 	Integer status;
 	
+	@Column(length = 125)
 	String trader;
+
+	@Column(length = 125)
 	String book;
+
+	@Column(length = 125)
 	String creationName;
 	
 	@CreationTimestamp
 	@Column(columnDefinition = "TIMESTAMP")
 	Date creationDate;
 	
+	@Column(length = 125)
 	String revisionName;
 	
 	@UpdateTimestamp
 	@Column(columnDefinition = "TIMESTAMP")
 	Date revisionDate;
 	
+	@Column(length = 125)
 	String dealName;
+
+	@Column(length = 125)
 	String dealType;
+
 	Integer sourceListId;
+
+	@Column(length = 125)
 	String side;
 
 	public Bid (String account, String type, BigDecimal bidQuantity)
@@ -95,5 +116,15 @@ public class Bid {
 		this.account=account;
 		this.type=type;
 		this.bidQuantity=bidQuantity;
+	}
+
+	@Override
+	public void setId(Integer id) {
+		setBidId(id);
+	}
+
+	@Override
+	public Object newForm() {
+		return new BidForm(this);
 	}
 }

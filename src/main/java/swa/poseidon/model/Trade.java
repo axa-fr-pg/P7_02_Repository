@@ -2,6 +2,7 @@ package swa.poseidon.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+
 import java.sql.Timestamp;
 
 

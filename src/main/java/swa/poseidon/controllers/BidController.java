@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 import swa.poseidon.services.BidService;
-
 import java.util.List;
 import javax.validation.Valid;
 

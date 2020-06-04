@@ -1,9 +1,11 @@
-package swa.poseidon.model;
+package swa.poseidon.form;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -14,41 +16,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import swa.poseidon.model.Rating;
 
-@Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rating 
+public class RatingForm 
 {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer ratingId;
-
-	@NotBlank
-	@Column(length = 125)
 	String moodysRating;
-
-	@NotBlank
-	@Column(length = 125)
 	String standPoorRating;
-
-	@NotBlank
-	@Column(length = 125)
 	String fitchRating;
-
-	@NotNull
-	@Positive
 	Integer orderNumber;
-	
-	Rating(String moodysRating, String standPoorRating, String fitchRating, Integer orderNumber)
+
+	RatingForm(Rating r)
 	{
-		// ratingId set to 0
-		this.moodysRating=moodysRating;
-		this.standPoorRating=standPoorRating;
-		this.fitchRating=fitchRating;
-		this.orderNumber=orderNumber;
+		ratingId=r.getRatingId();
+		moodysRating=r.getMoodysRating();
+		standPoorRating=r.getStandPoorRating();
+		fitchRating=r.getFitchRating();
+		orderNumber=r.getOrderNumber();
 	}
 }

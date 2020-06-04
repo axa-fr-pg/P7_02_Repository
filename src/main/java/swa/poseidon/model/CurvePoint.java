@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import swa.poseidon.services.EntityModelService;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;

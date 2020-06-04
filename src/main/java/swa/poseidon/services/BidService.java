@@ -5,9 +5,10 @@ import java.util.List;
 import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 
-public interface BidService {
+public interface BidService extends EntityCrudService<Bid,BidForm>
+{
 
-	public List<BidForm> readAll();
+/*	public List<BidForm> readAll();
 
 	public Bid create(Bid bid);
 	
@@ -15,5 +16,5 @@ public interface BidService {
 	
 	public Bid update(Bid bid);
 	
-	public boolean delete(Integer bidId);
+	public boolean delete(Integer bidId);*/
 }

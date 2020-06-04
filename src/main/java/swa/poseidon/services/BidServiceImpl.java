@@ -13,9 +13,10 @@ import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
 
 @Service
-@Transactional
-public class BidServiceImpl implements BidService 
+//@Transactional
+public class BidServiceImpl extends EntityCrudServiceImpl<Bid,BidForm> implements BidService 
 {
+	/*
 	@Autowired BidRepository bidRepository;
 
 	@Override
@@ -53,5 +54,5 @@ public class BidServiceImpl implements BidService
 		if (bid == null) return false;
 		bidRepository.delete(bid);
 		return true;
-	}
+	}*/
 }
