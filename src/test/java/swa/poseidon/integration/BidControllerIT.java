@@ -1,5 +1,6 @@
 package swa.poseidon.integration;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -11,14 +12,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -31,7 +30,6 @@ import swa.poseidon.form.BidForm;
 import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
-import swa.poseidon.services.BidService;
 import swa.poseidon.services.EntityServiceTest;
 
 @SpringBootTest
@@ -148,4 +146,27 @@ public class BidControllerIT {
 	    	.withRootCauseInstanceOf(NoSuchElementException.class);
 	}	
 
+	@Test
+	public void givenValidBidId_delete_removesBid() throws Exception 
+	{
+		// GIVEN
+		Bid initialBid =  saveNewTestBidToRepository(1);
+		Integer id = initialBid.getBidId();
+		// WHEN
+		String responseString = mvc.perform(delete("/bids/delete/"+id)).andDo(print()).andReturn().getResponse().getContentAsString();
+		Boolean responseObject = objectMapper.readValue(responseString, Boolean.class);
+		// THEN
+		assertTrue(responseObject);
+	}	
+
+	@Test
+	public void givenWrongBidId_delete_throwsNoSuchElementException() throws Exception 
+	{
+		// GIVEN
+		Integer id = 999;
+		// WHEN & THEN
+		assertThatExceptionOfType(NestedServletException.class)
+	    	.isThrownBy(() -> mvc.perform(delete("/bids/delete/"+id)))
+	    	.withRootCauseInstanceOf(NoSuchElementException.class);
+	}	
 }

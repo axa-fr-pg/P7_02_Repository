@@ -51,9 +51,9 @@ public class BidController
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list
-        return "redirect:/bidList/list";
+    public ResponseEntity<Boolean> deleteBid(@PathVariable("id") Integer id) 
+    {
+        return new ResponseEntity<Boolean>(bidService.delete(id), HttpStatus.ACCEPTED);
     }
     
     //TODO gérer les exceptions
