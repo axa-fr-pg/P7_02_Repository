@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.model.Trade;
 
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor
 public class TradeForm 
 {
 	Integer tradeId;

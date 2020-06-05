@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.List;
 import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -15,6 +16,9 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.Matchers.hasProperty;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -29,7 +33,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.Model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import swa.poseidon.form.BidForm;
+import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
 import swa.poseidon.services.EntityServiceTest;
@@ -42,11 +49,14 @@ public class BidControllerIT {
 	private MockMvc mvc;
 	
 	@Autowired
+	private ObjectMapper objectMapper;
+
+	@Autowired
 	private BidRepository bidRepository;
 	
-	private Bid addBidForTest(int index)
+	private Bid saveNewTestBidToRepository(int index)
 	{
-		return bidRepository.save(EntityServiceTest.newValidBidForTest(index));
+		return bidRepository.save(EntityServiceTest.newTestBidWithIdZero(index));
 	}
 	
 	@BeforeEach
@@ -59,43 +69,27 @@ public class BidControllerIT {
 	public void givenBidList_readAll_returnsCorrectList() throws Exception 
 	{
 		// GIVEN
-		Bid b1 =  addBidForTest(1);
-		Bid b2 =  addBidForTest(2);
-		Bid b3 =  addBidForTest(3);		
+		Bid b1 =  saveNewTestBidToRepository(1);
+		Bid b2 =  saveNewTestBidToRepository(2);
+		Bid b3 =  saveNewTestBidToRepository(3);		
 		// WHEN & THEN
-		mvc.perform(get("/bids/list")).andDo(print())
-		   .andExpect(status().isOk())
-		   .andExpect(view().name("/bids/list"))
-		   .andExpect(model().size(1)) // one single attribute passed as parameter
-		   .andExpect(model().attribute("bids", hasSize(3))) // our three test bids
-		   .andExpect(model().attribute("bids", hasItem(allOf(
-				hasProperty("bidId", is(b1.getBidId())),
-				hasProperty("account", is(b1.getAccount())),
-				hasProperty("type", is(b1.getType()))/*,
-				hasProperty("bidQuantity", is(String.format(Locale.US, "%.1f", b1.getBidQuantity())))*/
-			))))
-		   .andExpect(model().attribute("bids", hasItem(allOf(
-				hasProperty("bidId", is(b2.getBidId())),
-				hasProperty("account", is(b2.getAccount())),
-				hasProperty("type", is(b2.getType()))/*,
-				hasProperty("bidQuantity", is(String.format(Locale.US, "%.1f", b2.getBidQuantity())))*/
-			))))
-		   .andExpect(model().attribute("bids", hasItem(allOf(
-				hasProperty("bidId", is(b3.getBidId())),
-				hasProperty("account", is(b3.getAccount())),
-				hasProperty("type", is(b3.getType()))/*,
-				hasProperty("bidQuantity", is(String.format(Locale.US, "%.1f", b3.getBidQuantity())))*/
-			))))
-		   ;
+		String responseString = mvc.perform(get("/bids/list")).andDo(print()).andReturn().getResponse().getContentAsString();
+		BidFormList responseObject = objectMapper.readValue(responseString, BidFormList.class);
+		// THEN
+		assertNotNull(responseObject); 
+		assertEquals(3, responseObject.getBidFormList().size());
+		assertTrue(responseObject.getBidFormList().get(0).matches(b1));
+		assertTrue(responseObject.getBidFormList().get(1).matches(b2));
+		assertTrue(responseObject.getBidFormList().get(2).matches(b3));
 	}
 	
 	@Test
 	public void givenBid_post_returnsCorrectList() throws Exception 
 	{
 		// GIVEN
-		Bid b1 =  addBidForTest(1);
-		Bid b2 =  addBidForTest(2);
-		Bid b3 =  EntityServiceTest.newValidBidForTest(3);
+		Bid b1 =  saveNewTestBidToRepository(1);
+		Bid b2 =  saveNewTestBidToRepository(2);
+		Bid b3 =  EntityServiceTest.newTestBidWithIdZero(3);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
 			.post("/bids/add")
 			.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)

@@ -29,17 +29,22 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	@Autowired
 	private BidService bidService;
 	
-	static public Bid newValidBidForTest(int index) 
+	static public Bid newTestBidWithIdZero(int index) 
 	{
 		return new Bid ("account"+index, "type"+index, new BigDecimal(index*1.0));
+	}
+			
+	static public Bid newTestBidWithGivenId(Integer id) 
+	{
+		return new Bid ("account"+id, "type"+id, new BigDecimal(id*1.0));
 	}
 			
 	@Test
 	public void givenBidList_readAll_returnsCorrectList() {
 		// GIVEN
-		Bid b1 =  newValidBidForTest(1);
-		Bid b2 =  newValidBidForTest(2);
-		Bid b3 =  newValidBidForTest(3);
+		Bid b1 =  newTestBidWithIdZero(1);
+		Bid b2 =  newTestBidWithIdZero(2);
+		Bid b3 =  newTestBidWithIdZero(3);
 		List<Bid> bidList = Arrays.asList(b1, b2, b3);
 		when(bidRepository.findAll()).thenReturn(bidList);
 		// WHEN
@@ -60,36 +65,36 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	public void givenNewBid_create_generatesNewId()
 	{
 		// GIVEN
-		Bid b1 =  newValidBidForTest(1);
-		Bid b1Saved =  new Bid(b1.getAccount(), b1.getType(), b1.getBidQuantity());
-		b1Saved.setId(1);
-		when(bidRepository.save(b1)).thenReturn(b1Saved);
+		Bid given =  newTestBidWithIdZero(1);
+		Bid expected =  newTestBidWithGivenId(1);
+		expected.setId(1);
+		when(bidRepository.save(given)).thenReturn(expected);
 		// WHEN
-		Bid result = bidService.create(b1);
+		Bid result = bidService.create(given);
 		// THEN
 		assertNotNull(result);
-		assertEquals(b1Saved.getBidId(), result.getBidId());
+		assertEquals(expected.getBidId(), result.getBidId());
 	}
 	
 	@Test
 	public void givenBidFound_read_returnsCorrectBid() {
 		// GIVEN
-		Bid b1 =  newValidBidForTest(1);
-		when(bidRepository.findById(b1.getBidId())).thenReturn(Optional.of(b1));
+		Bid expected =  newTestBidWithGivenId(1);
+		when(bidRepository.findById(expected.getBidId())).thenReturn(Optional.of(expected));
 		// WHEN
-		Bid result = bidService.read(b1.getBidId());
+		Bid result = bidService.read(expected.getBidId());
 		// THEN
 		assertNotNull(result);
-		assertEquals(b1.getBidId(), result.getBidId());
+		assertEquals(expected.getBidId(), result.getBidId());
 	}
 	
 	@Test
 	public void givenBidNotFound_read_returnsNoBid() {
 		// GIVEN
-		Bid b1 =  newValidBidForTest(1);
-		when(bidRepository.findById(b1.getBidId())).thenReturn(null);
+		Integer id = -1;
+		when(bidRepository.findById(id)).thenReturn(null);
 		// WHEN
-		Bid result = bidService.read(b1.getBidId());
+		Bid result = bidService.read(id);
 		// THEN
 		assertNull(result);
 	}
@@ -97,10 +102,10 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	@Test
 	public void givenBidFound_delete_returnsTrue() {
 		// GIVEN
-		Bid b1 =  newValidBidForTest(1);
-		when(bidRepository.findById(b1.getBidId())).thenReturn(Optional.of(b1));
+		Bid expected =  newTestBidWithGivenId(1);
+		when(bidRepository.findById(expected.getBidId())).thenReturn(Optional.of(expected));
 		// WHEN
-		boolean result = bidService.delete(b1.getBidId());
+		boolean result = bidService.delete(expected.getBidId());
 		// THEN
 		assertTrue(result);
 	}
@@ -108,10 +113,10 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	@Test
 	public void givenBidNotFound_delete_returnsFalse() {
 		// GIVEN
-		Bid b1 =  newValidBidForTest(1);
-		when(bidRepository.findById(b1.getBidId())).thenReturn(null);
+		Integer id = -1;
+		when(bidRepository.findById(id)).thenReturn(null);
 		// WHEN
-		boolean result = bidService.delete(b1.getBidId());
+		boolean result = bidService.delete(id);
 		// THEN
 		assertFalse(result);
 	}	
