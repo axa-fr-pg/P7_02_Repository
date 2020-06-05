@@ -1,47 +1,36 @@
 package swa.poseidon.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.NoSuchElementException;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.hamcrest.Matchers.hasProperty;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.ui.Model;
+import org.springframework.web.util.NestedServletException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import swa.poseidon.form.BidForm;
 import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
+import swa.poseidon.services.BidService;
 import swa.poseidon.services.EntityServiceTest;
 
 @SpringBootTest
@@ -56,6 +45,9 @@ public class BidControllerIT {
 
 	@Autowired
 	private BidRepository bidRepository;
+	
+	@Autowired
+	private BidService bidService;
 	
 	private Bid saveNewTestBidToRepository(int index)
 	{
@@ -100,5 +92,37 @@ public class BidControllerIT {
 			.andExpect(jsonPath("$.account").value("account1"))
 			.andExpect(jsonPath("$.type").value("type1")) 
 			.andExpect(jsonPath("$.bidQuantity").value(1));
+	}
+	
+	@Test
+	public void givenBidForm_put_returnsCorrectBid() throws Exception 
+	{
+		// GIVEN
+		Bid newBid =  EntityServiceTest.newTestBidWithIdZero(1);
+		Bid initialBid =  bidService.create(newBid.toForm());
+		Integer id = initialBid.getBidId();
+		String json = objectMapper.writeValueAsString(initialBid.toForm());
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + id)
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+		// WHEN & THEN
+		mvc.perform(builder).andDo(print()).andExpect(status().isOk())
+			.andExpect(jsonPath("$.bidId").value(id)) 
+			.andExpect(jsonPath("$.account").value("account1"))
+			.andExpect(jsonPath("$.type").value("type1")) 
+			.andExpect(jsonPath("$.bidQuantity").value(1));
+	}
+	
+	@Test
+	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
+	{
+		// GIVEN
+		Bid initialBid =  EntityServiceTest.newTestBidWithGivenId(1);
+		String json = objectMapper.writeValueAsString(initialBid.toForm());
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + 1)
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+		// WHEN & THEN
+		assertThatExceptionOfType(NestedServletException.class)
+	    	.isThrownBy(() -> mvc.perform(builder).andDo(print()))
+	    	.withRootCauseInstanceOf(NoSuchElementException.class);
 	}
 }

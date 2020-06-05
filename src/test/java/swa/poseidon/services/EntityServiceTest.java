@@ -14,12 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @SpringBootTest
@@ -38,7 +40,9 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 			
 	static public Bid newTestBidWithGivenId(Integer id) 
 	{
-		return new Bid ("account"+id, "type"+id, new BigDecimal(id*1.0));
+		Bid b = new Bid ("account"+id, "type"+id, new BigDecimal(id*1.0));
+		b.setId(id);
+		return b;
 	}
 	
 	@BeforeEach
@@ -96,15 +100,29 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	}
 	
 	@Test
-	public void givenBidNotFound_read_returnsNoBid() {
+	public void givenBidNotFound_read_throwsNoSuchElementException() {
 		// GIVEN
-		Integer id = -1;
-		when(bidRepository.findById(id)).thenReturn(null);
-		// WHEN
-		Bid result = bidService.read(id);
-		// THEN
-		assertNull(result);
+		Integer id = 999;
+		when(bidRepository.findById(id)).thenReturn(Optional.empty());
+		// WHEN & THEN
+		assertThrows(NoSuchElementException.class, () -> bidService.read(id));
 	}
+	
+	@Test
+	public void givenBid_update_savesBid()
+	{
+		// GIVEN
+		Bid expected =  newTestBidWithGivenId(1);
+		BidForm given =  expected.toForm();
+		when(bidRepository.findById(1)).thenReturn((Optional<Bid>) Optional.of(expected));
+		when(bidRepository.save(any(Bid.class))).thenReturn(expected);
+		// WHEN
+		Bid result = bidService.update(given);
+		// THEN
+		assertNotNull(result);
+		assertEquals(expected.getBidId(), result.getBidId());
+	}
+		
 	
 	@Test
 	public void givenBidFound_delete_returnsTrue() {
@@ -118,13 +136,11 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	}
 	
 	@Test
-	public void givenBidNotFound_delete_returnsFalse() {
+	public void givenBidNotFound_delete_throwsNoSuchElementException() {
 		// GIVEN
-		Integer id = -1;
-		when(bidRepository.findById(id)).thenReturn(null);
-		// WHEN
-		boolean result = bidService.delete(id);
-		// THEN
-		assertFalse(result);
+		Integer id = 999;
+		when(bidRepository.findById(id)).thenReturn(Optional.empty());
+		// WHEN & THEN
+		assertThrows(NoSuchElementException.class, () -> bidService.delete(id));
 	}	
 }

@@ -37,7 +37,7 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 		FormCore<E> fCore = (FormCore<E>) f;
 		E e = fCore.toEntity();
 		EntityCore<F> eCore = (EntityCore<F>) e;
-		eCore.setId(0);
+		eCore.setId(0); // ensure that save will generate a new entry and not overwrite anything
 		return repository.save((E)eCore);
 	}
 
@@ -45,18 +45,21 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 	public E read(Integer eId) 
 	{
 		Optional<E> e = repository.findById(eId);
-		if (e == null) return null;
-		else return e.get();
+		return e.get(); // throws java.util.NoSuchElementException
 	}
 
 	@Override
-	public E update(E e) 
+	public E update(F f)  
 	{
-		return repository.save(e);
+		@SuppressWarnings("unchecked")
+		FormCore<E> fCore = (FormCore<E>) f;
+		read(fCore.id()); // check if exists
+		return repository.save(fCore.toEntity());
 	}
 
 	@Override
-	public boolean delete(Integer eId) {
+	public boolean delete(Integer eId) 
+	{
 		E e = read(eId);
 		if (e == null) return false;
 		repository.delete(e);

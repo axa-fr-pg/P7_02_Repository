@@ -10,7 +10,7 @@ public interface EntityService<E,F>
 	
 	public E read(Integer eId);
 	
-	public E update(E e);
+	public E update(F f);
 	
 	public boolean delete(Integer eId);
 }
