@@ -18,7 +18,6 @@ import swa.poseidon.form.BidFormList;
 import swa.poseidon.services.BidService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/bids")
@@ -45,9 +44,31 @@ public class BidController
         return new ResponseEntity<BidForm>(new BidForm(bidService.update(bidForm)), HttpStatus.OK);
     }
 
+    @GetMapping("/read/{id}")
+    public ResponseEntity<BidForm> read(@PathVariable Integer id) 
+    {
+        return new ResponseEntity<BidForm>(new BidForm(bidService.read(id)), HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Bid by Id and delete the bid, return to Bid list
         return "redirect:/bidList/list";
     }
+    
+    //TODO gérer les exceptions
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

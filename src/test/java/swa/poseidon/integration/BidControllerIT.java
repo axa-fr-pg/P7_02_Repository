@@ -27,6 +27,7 @@ import org.springframework.web.util.NestedServletException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import swa.poseidon.form.BidForm;
 import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
@@ -45,9 +46,6 @@ public class BidControllerIT {
 
 	@Autowired
 	private BidRepository bidRepository;
-	
-	@Autowired
-	private BidService bidService;
 	
 	private Bid saveNewTestBidToRepository(int index)
 	{
@@ -79,7 +77,7 @@ public class BidControllerIT {
 	}
 	
 	@Test
-	public void givenBidForm_post_returnsCorrectBid() throws Exception 
+	public void givenBidForm_post_returnsCreatedBidForm() throws Exception 
 	{
 		// GIVEN
 		Bid newBid =  EntityServiceTest.newTestBidWithIdZero(1);
@@ -95,11 +93,10 @@ public class BidControllerIT {
 	}
 	
 	@Test
-	public void givenBidForm_put_returnsCorrectBid() throws Exception 
+	public void givenCorrectBidForm_put_returnsUpdatedBidForm() throws Exception 
 	{
 		// GIVEN
-		Bid newBid =  EntityServiceTest.newTestBidWithIdZero(1);
-		Bid initialBid =  bidService.create(newBid.toForm());
+		Bid initialBid =  saveNewTestBidToRepository(1);
 		Integer id = initialBid.getBidId();
 		String json = objectMapper.writeValueAsString(initialBid.toForm());
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + id)
@@ -122,7 +119,33 @@ public class BidControllerIT {
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN
 		assertThatExceptionOfType(NestedServletException.class)
-	    	.isThrownBy(() -> mvc.perform(builder).andDo(print()))
+	    	.isThrownBy(() -> mvc.perform(builder))
 	    	.withRootCauseInstanceOf(NoSuchElementException.class);
 	}
+	
+	@Test
+	public void givenValidBidId_read_returnsCorrectBidForm() throws Exception 
+	{
+		// GIVEN
+		Bid initialBid =  saveNewTestBidToRepository(1);
+		Integer id = initialBid.getBidId();
+		// WHEN
+		String responseString = mvc.perform(get("/bids/read/"+id)).andDo(print()).andReturn().getResponse().getContentAsString();
+		BidForm responseObject = objectMapper.readValue(responseString, BidForm.class);
+		// THEN
+		assertNotNull(responseObject); 
+		assertTrue(responseObject.matches(initialBid));
+	}	
+
+	@Test
+	public void givenWrongBidId_read_throwsNoSuchElementException() throws Exception 
+	{
+		// GIVEN
+		Integer id = 999;
+		// WHEN & THEN
+		assertThatExceptionOfType(NestedServletException.class)
+	    	.isThrownBy(() -> mvc.perform(get("/bids/read/"+id)))
+	    	.withRootCauseInstanceOf(NoSuchElementException.class);
+	}	
+
 }
