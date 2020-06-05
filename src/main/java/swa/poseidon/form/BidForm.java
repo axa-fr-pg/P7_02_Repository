@@ -41,7 +41,7 @@ public class BidForm implements FormCore<Bid>
 	
 	public boolean matches(Bid b)
 	{
-		if (bidId != b.getBidId()) return false;
+		if (bidId.intValue() != b.getBidId().intValue()) return false;
 		if (!account.equals(b.getAccount())) return false;
 		if (!type.equals(b.getType())) return false;
 		if (bidQuantity.compareTo(b.getBidQuantity())!=0) return false;
