@@ -113,12 +113,14 @@ public class Bid implements EntityCore<BidForm>
 	}
 
 	@Override
-	public void setId(Integer id) {
+	public void setId(Integer id) 
+	{
 		bidId=id;
 	}
 
 	@Override
-	public BidForm toForm() {
+	public BidForm toForm() 
+	{
 		return new BidForm(this);
 	}
 }

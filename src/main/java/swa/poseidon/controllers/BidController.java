@@ -3,7 +3,6 @@ package swa.poseidon.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,20 +33,20 @@ public class BidController
     @PostMapping("/add")
     public ResponseEntity<BidForm> add(@RequestBody @Valid BidForm bidForm) 
     {
-        return new ResponseEntity<BidForm>(new BidForm(bidService.create(bidForm)), HttpStatus.CREATED);
+        return new ResponseEntity<BidForm>(bidService.create(bidForm).toForm(), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<BidForm> update(@PathVariable Integer id, @RequestBody @Valid BidForm bidForm) throws InvalidRequestException 
     {
     	if (id == 0 || bidForm.getBidId() == null || id != bidForm.getBidId().intValue()) throw new InvalidRequestException();
-        return new ResponseEntity<BidForm>(new BidForm(bidService.update(bidForm)), HttpStatus.OK);
+        return new ResponseEntity<BidForm>(bidService.update(bidForm).toForm(), HttpStatus.OK);
     }
 
     @GetMapping("/read/{id}")
     public ResponseEntity<BidForm> read(@PathVariable Integer id) 
     {
-        return new ResponseEntity<BidForm>(new BidForm(bidService.read(id)), HttpStatus.OK);
+        return new ResponseEntity<BidForm>(bidService.read(id).toForm(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -55,6 +54,9 @@ public class BidController
     {
         return new ResponseEntity<Boolean>(bidService.delete(id), HttpStatus.ACCEPTED);
     }
+    
+    
+    
     
     //TODO gérer les exceptions
     

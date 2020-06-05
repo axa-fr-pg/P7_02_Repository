@@ -1,9 +1,8 @@
-package swa.poseidon.model;
+package swa.poseidon.form;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -17,9 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CurvePointTest 
+import swa.poseidon.model.Rating;
+
+public class RatingTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(CurvePointTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RatingTest.class);
 
 	private static ValidatorFactory factory;
  	private static Validator validator;
@@ -41,13 +42,14 @@ public class CurvePointTest
 	public void givenValidParameters_newInstance_returnsEmptyViolationSet()
 	{
 		// GIVEN
-		Integer curveId = 1;
-		BigDecimal term = new BigDecimal(1234567.0);
-		BigDecimal value = new BigDecimal(87654321.0);
+		String moodysRating="moody";
+		String standPoorRating="standard & poor";
+		String fitchRating="fitch";
+		Integer orderNumber=1;
 		// WHEN
-		CurvePoint curvePoint = new CurvePoint(curveId, term, value);
-        Set<ConstraintViolation<CurvePoint>> violations = validator.validate(curvePoint);
-        for (ConstraintViolation<CurvePoint> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		Rating rating = new Rating(moodysRating, standPoorRating, fitchRating, orderNumber);
+        Set<ConstraintViolation<Rating>> violations = validator.validate(rating);
+        for (ConstraintViolation<Rating> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -56,14 +58,15 @@ public class CurvePointTest
 	public void givenInvalidParameters_newInstance_returnsViolationErrors()
 	{
 		// GIVEN
-		Integer curveId = 0;
-		BigDecimal term = new BigDecimal(123456789L);
-		BigDecimal value = new BigDecimal(123456789L);
+		String moodysRating="";
+		String standPoorRating="";
+		String fitchRating="";
+		Integer orderNumber=0;
 		// WHEN
-		CurvePoint curvePoint = new CurvePoint(curveId, term, value);
-        Set<ConstraintViolation<CurvePoint>> violations = validator.validate(curvePoint);
-        for (ConstraintViolation<CurvePoint> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		Rating rating = new Rating(moodysRating, standPoorRating, fitchRating, orderNumber);
+        Set<ConstraintViolation<Rating>> violations = validator.validate(rating);
+        for (ConstraintViolation<Rating> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
-        assertEquals(3, violations.size());
+        assertEquals(4, violations.size());
 	}
 }

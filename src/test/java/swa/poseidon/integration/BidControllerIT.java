@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -75,11 +76,11 @@ public class BidControllerIT {
 	}
 	
 	@Test
-	public void givenBidForm_post_returnsCreatedBidForm() throws Exception 
+	public void givenValidBidForm_post_returnsCreatedBidForm() throws Exception 
 	{
 		// GIVEN
-		Bid newBid =  EntityServiceTest.newTestBidWithIdZero(1);
-		String json = objectMapper.writeValueAsString(newBid);
+		BidForm form =  EntityServiceTest.newTestBidWithIdZero(1).toForm();
+		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN
@@ -91,12 +92,24 @@ public class BidControllerIT {
 	}
 	
 	@Test
+	public void givenInvalidBidForm_post_returnsBadRequestStatus() throws Exception 
+	{
+		// GIVEN
+		BidForm form = new Bid("", "", new BigDecimal(0)).toForm();
+		String json = objectMapper.writeValueAsString(form);
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+		// WHEN & THEN
+		mvc.perform(builder).andDo(print()).andExpect(status().isBadRequest());
+	}
+	
+	@Test
 	public void givenCorrectBidForm_put_returnsUpdatedBidForm() throws Exception 
 	{
 		// GIVEN
-		Bid initialBid =  saveNewTestBidToRepository(1);
-		Integer id = initialBid.getBidId();
-		String json = objectMapper.writeValueAsString(initialBid.toForm());
+		BidForm form =  saveNewTestBidToRepository(1).toForm();
+		Integer id = form.getBidId();
+		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + id)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN
@@ -111,8 +124,8 @@ public class BidControllerIT {
 	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
 	{
 		// GIVEN
-		Bid initialBid =  EntityServiceTest.newTestBidWithGivenId(1);
-		String json = objectMapper.writeValueAsString(initialBid.toForm());
+		BidForm form = EntityServiceTest.newTestBidWithGivenId(1).toForm();
+		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + 1)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN

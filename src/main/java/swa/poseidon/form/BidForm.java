@@ -55,7 +55,8 @@ public class BidForm implements FormCore<Bid>
 	}
 
 	@Override
-	public Integer id() {
+	public Integer id() 
+	{
 		return bidId;
 	}
 }

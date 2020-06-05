@@ -1,8 +1,8 @@
-package swa.poseidon.model;
+package swa.poseidon.form;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -16,9 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RatingTest 
+import swa.poseidon.form.BidForm;
+import swa.poseidon.model.Bid;
+
+public class BidFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(RatingTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BidFormTest.class);
 
 	private static ValidatorFactory factory;
  	private static Validator validator;
@@ -40,14 +43,13 @@ public class RatingTest
 	public void givenValidParameters_newInstance_returnsEmptyViolationSet()
 	{
 		// GIVEN
-		String moodysRating="moody";
-		String standPoorRating="standard & poor";
-		String fitchRating="fitch";
-		Integer orderNumber=1;
+		String account="account1";
+		String type="type1";
+		BigDecimal bidQuantity = new BigDecimal(12345678.0);
 		// WHEN
-		Rating rating = new Rating(moodysRating, standPoorRating, fitchRating, orderNumber);
-        Set<ConstraintViolation<Rating>> violations = validator.validate(rating);
-        for (ConstraintViolation<Rating> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		BidForm form =  new BidForm(new Bid(account, type, bidQuantity));
+        Set<ConstraintViolation<BidForm>> violations = validator.validate(form);
+        for (ConstraintViolation<BidForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -56,15 +58,14 @@ public class RatingTest
 	public void givenInvalidParameters_newInstance_returnsViolationErrors()
 	{
 		// GIVEN
-		String moodysRating="";
-		String standPoorRating="";
-		String fitchRating="";
-		Integer orderNumber=0;
+		String account="";
+		String type="";
+		BigDecimal bidQuantity=new BigDecimal(0);
 		// WHEN
-		Rating rating = new Rating(moodysRating, standPoorRating, fitchRating, orderNumber);
-        Set<ConstraintViolation<Rating>> violations = validator.validate(rating);
-        for (ConstraintViolation<Rating> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		BidForm form =  new BidForm(new Bid(account, type, bidQuantity));
+        Set<ConstraintViolation<BidForm>> violations = validator.validate(form);
+        for (ConstraintViolation<BidForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
-        assertEquals(4, violations.size());
+        assertEquals(3, violations.size());
 	}
 }
