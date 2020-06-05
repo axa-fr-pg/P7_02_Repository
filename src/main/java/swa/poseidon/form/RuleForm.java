@@ -6,12 +6,6 @@ public class RuleForm extends Rule // Extension to keep distinct classes for fut
 {
 	public RuleForm(Rule r)
 	{
-		super.setRuleId(r.getRuleId());
-		super.setName(r.getName());
-		super.setDescription(r.getDescription());
-		super.setJson(r.getJson());
-		super.setTemplate(r.getTemplate());
-		super.setSqlStr(r.getSqlStr());
-		super.setSqlPart(r.getSqlPart());
+		super(r);
 	}
 }

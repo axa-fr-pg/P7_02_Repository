@@ -12,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.TradeForm;
 
@@ -23,7 +22,6 @@ import java.util.Date;
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
-@Setter
 @NoArgsConstructor
 public class Trade implements EntityCore<TradeForm>
 {
@@ -109,7 +107,7 @@ public class Trade implements EntityCore<TradeForm>
 
 	@Override
 	public void setId(Integer id) {
-		setTradeId(id);
+		tradeId=id;
 	}
 
 	@Override

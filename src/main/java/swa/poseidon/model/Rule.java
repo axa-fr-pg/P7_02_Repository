@@ -6,14 +6,12 @@ import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.RuleForm;
 
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
-@Setter
 @NoArgsConstructor
 public class Rule implements EntityCore<RuleForm>
 {
@@ -56,9 +54,20 @@ public class Rule implements EntityCore<RuleForm>
 		this.sqlPart=sqlPart;
 	}
 
+	public Rule(Rule r)
+	{
+		this.ruleId=r.getRuleId();
+		this.name=r.getName();
+		this.description=r.getDescription();
+		this.json=r.getJson();
+		this.template=r.getTemplate();
+		this.sqlStr=r.getSqlStr();
+		this.sqlPart=r.getSqlPart();
+	}
+
 	@Override
 	public void setId(Integer id) {
-		setRuleId(id);
+		ruleId=id;
 	}
 
 	@Override

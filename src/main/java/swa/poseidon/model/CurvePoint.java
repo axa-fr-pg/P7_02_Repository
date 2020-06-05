@@ -5,7 +5,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.CurvePointForm;
 
@@ -20,7 +19,6 @@ import java.util.Date;
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
-@Setter
 @NoArgsConstructor
 public class CurvePoint implements EntityCore<CurvePointForm>
 {
@@ -59,7 +57,7 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	@Override
 	public void setId(Integer id) 
 	{
-		setCurvePointId(id);
+		curvePointId=id;
 	}
 
 	@Override

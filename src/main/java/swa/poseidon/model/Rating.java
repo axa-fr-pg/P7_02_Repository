@@ -8,14 +8,12 @@ import javax.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.RatingForm;
 
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
-@Setter
 @NoArgsConstructor
 public class Rating implements EntityCore<RatingForm>
 {
@@ -39,7 +37,7 @@ public class Rating implements EntityCore<RatingForm>
 	@Positive
 	Integer orderNumber;
 	
-	Rating(String moodysRating, String standPoorRating, String fitchRating, Integer orderNumber)
+	public Rating(String moodysRating, String standPoorRating, String fitchRating, Integer orderNumber)
 	{
 		// ratingId set to 0
 		this.moodysRating=moodysRating;
@@ -48,9 +46,18 @@ public class Rating implements EntityCore<RatingForm>
 		this.orderNumber=orderNumber;
 	}
 
+	public Rating(Rating r)
+	{
+		this.ratingId=r.getRatingId();
+		this.moodysRating=r.getMoodysRating();
+		this.standPoorRating=r.getStandPoorRating();
+		this.fitchRating=r.getFitchRating();
+		this.orderNumber=r.getOrderNumber();
+	}
+
 	@Override
 	public void setId(Integer id) {
-		setRatingId(id);
+		ratingId=id;
 	}
 
 	@Override

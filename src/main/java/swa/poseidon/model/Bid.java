@@ -3,7 +3,6 @@ package swa.poseidon.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.BidForm;
 
@@ -22,7 +21,6 @@ import java.util.Date;
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
-@Setter
 @NoArgsConstructor
 public class Bid implements EntityCore<BidForm>
 {
@@ -117,7 +115,7 @@ public class Bid implements EntityCore<BidForm>
 
 	@Override
 	public void setId(Integer id) {
-		setBidId(id);
+		bidId=id;
 	}
 
 	@Override

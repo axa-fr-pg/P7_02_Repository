@@ -62,7 +62,7 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 		// GIVEN
 		Bid b1 =  newValidBidForTest(1);
 		Bid b1Saved =  new Bid(b1.getAccount(), b1.getType(), b1.getBidQuantity());
-		b1Saved.setBidId(1);
+		b1Saved.setId(1);
 		when(bidRepository.save(b1)).thenReturn(b1Saved);
 		// WHEN
 		Bid result = bidService.create(b1);
