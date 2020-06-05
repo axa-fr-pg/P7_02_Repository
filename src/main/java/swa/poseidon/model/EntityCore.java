@@ -4,5 +4,5 @@ public interface EntityCore<F>
 {
 	public void setId(Integer id);
 	
-	public F newForm();
+	public F toForm();	
 }

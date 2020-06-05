@@ -6,7 +6,7 @@ public interface EntityService<E,F>
 {
 	public List<F> readAll();
 
-	public E create(E e);
+	public E create(F f);
 	
 	public E read(Integer eId);
 	

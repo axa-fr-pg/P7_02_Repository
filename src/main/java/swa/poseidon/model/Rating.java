@@ -61,7 +61,7 @@ public class Rating implements EntityCore<RatingForm>
 	}
 
 	@Override
-	public RatingForm newForm() {
+	public RatingForm toForm() {
 		return new RatingForm(this);
 	}
 }

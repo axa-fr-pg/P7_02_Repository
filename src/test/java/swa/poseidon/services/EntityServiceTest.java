@@ -1,9 +1,11 @@
 package swa.poseidon.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import static org.mockito.ArgumentMatchers.any;
 import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
@@ -38,7 +40,13 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	{
 		return new Bid ("account"+id, "type"+id, new BigDecimal(id*1.0));
 	}
-			
+	
+	@BeforeEach
+	public void cleanDataBase()
+	{
+		bidRepository.deleteAll();
+	}
+	
 	@Test
 	public void givenBidList_readAll_returnsCorrectList() {
 		// GIVEN
@@ -65,10 +73,9 @@ public class EntityServiceTest // generic service --> can be tested with one ent
 	public void givenNewBid_create_generatesNewId()
 	{
 		// GIVEN
-		Bid given =  newTestBidWithIdZero(1);
+		BidForm given =  newTestBidWithIdZero(1).toForm();
 		Bid expected =  newTestBidWithGivenId(1);
-		expected.setId(1);
-		when(bidRepository.save(given)).thenReturn(expected);
+		when(bidRepository.save(any(Bid.class))).thenReturn(expected);
 		// WHEN
 		Bid result = bidService.create(given);
 		// THEN

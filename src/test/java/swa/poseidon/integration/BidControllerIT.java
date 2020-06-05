@@ -3,6 +3,7 @@ package swa.poseidon.integration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -14,6 +15,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.ui.Model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +67,7 @@ public class BidControllerIT {
 	{
 		bidRepository.deleteAll();
 	}
-	
+
 	@Test
 	public void givenBidList_readAll_returnsCorrectList() throws Exception 
 	{
@@ -72,7 +75,7 @@ public class BidControllerIT {
 		Bid b1 =  saveNewTestBidToRepository(1);
 		Bid b2 =  saveNewTestBidToRepository(2);
 		Bid b3 =  saveNewTestBidToRepository(3);		
-		// WHEN & THEN
+		// WHEN
 		String responseString = mvc.perform(get("/bids/list")).andDo(print()).andReturn().getResponse().getContentAsString();
 		BidFormList responseObject = objectMapper.readValue(responseString, BidFormList.class);
 		// THEN
@@ -84,26 +87,18 @@ public class BidControllerIT {
 	}
 	
 	@Test
-	public void givenBid_post_returnsCorrectList() throws Exception 
+	public void givenBidForm_post_returnsCorrectBid() throws Exception 
 	{
 		// GIVEN
-		Bid b1 =  saveNewTestBidToRepository(1);
-		Bid b2 =  saveNewTestBidToRepository(2);
-		Bid b3 =  EntityServiceTest.newTestBidWithIdZero(3);
-		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-			.post("/bids/add")
-			.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-			.accept(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("account", b3.getAccount())
-            .param("type", b3.getType())
-            .param("bidQuantity", b3.getBidQuantity().toString())
-            ;
+		Bid newBid =  EntityServiceTest.newTestBidWithIdZero(1);
+		String json = objectMapper.writeValueAsString(newBid);
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN
-		mvc.perform(builder)
-			.andDo(print())
-//		   	.andExpect(status().isCreated())
-//		   	.andExpect(view().name("/bids/list"))
-//		   	.andExpect(model().size(1)) // one single attribute passed as parameter
-		   	;
+		mvc.perform(builder).andDo(print()).andExpect(status().isCreated())
+			.andExpect(jsonPath("$.bidId").value(greaterThan(0))) 
+			.andExpect(jsonPath("$.account").value("account1"))
+			.andExpect(jsonPath("$.type").value("type1")) 
+			.andExpect(jsonPath("$.bidQuantity").value(1));
 	}
 }

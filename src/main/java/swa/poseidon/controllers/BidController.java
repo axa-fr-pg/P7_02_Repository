@@ -1,14 +1,18 @@
 package swa.poseidon.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import swa.poseidon.form.BidForm;
 import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
 import swa.poseidon.services.BidService;
@@ -26,21 +30,10 @@ public class BidController
         return new BidFormList(bidService.readAll());
     }
 
-    @GetMapping("/add")
-    public String getRequestAdd(Bid bid) 
-    {    	
-        return "bids/add";
-    }
-
     @PostMapping("/add")
-    public String postDataAdd(@Valid Bid bid, BindingResult result, Model model) 
+    public ResponseEntity<BidForm> add(@RequestBody @Valid BidForm bidForm) 
     {
-        if (result.hasErrors()) 
-        {        	
-            return "/bids/add";
-        }
-        bidService.create(bid);
-        return "redirect:/bids/list";
+        return new ResponseEntity<BidForm>(new BidForm(bidService.create(bidForm)), HttpStatus.CREATED);
     }
 
     @GetMapping("/update/{id}")

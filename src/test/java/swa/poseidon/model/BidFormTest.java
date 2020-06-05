@@ -16,11 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 
-public class BidTest 
+public class BidFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(BidTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BidFormTest.class);
 
 	private static ValidatorFactory factory;
  	private static Validator validator;
@@ -46,9 +47,9 @@ public class BidTest
 		String type="type1";
 		BigDecimal bidQuantity = new BigDecimal(12345678.0);
 		// WHEN
-		Bid bid =  new Bid(account, type, bidQuantity);
-        Set<ConstraintViolation<Bid>> violations = validator.validate(bid);
-        for (ConstraintViolation<Bid> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		BidForm form =  new BidForm(new Bid(account, type, bidQuantity));
+        Set<ConstraintViolation<BidForm>> violations = validator.validate(form);
+        for (ConstraintViolation<BidForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -61,9 +62,9 @@ public class BidTest
 		String type="";
 		BigDecimal bidQuantity=new BigDecimal(0);
 		// WHEN
-		Bid bid =  new Bid(account, type, bidQuantity);
-        Set<ConstraintViolation<Bid>> violations = validator.validate(bid);
-        for (ConstraintViolation<Bid> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		BidForm form =  new BidForm(new Bid(account, type, bidQuantity));
+        Set<ConstraintViolation<BidForm>> violations = validator.validate(form);
+        for (ConstraintViolation<BidForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(3, violations.size());
 	}

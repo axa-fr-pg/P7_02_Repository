@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import swa.poseidon.form.FormCore;
 import swa.poseidon.model.EntityCore;
 
 @Transactional
@@ -22,20 +23,22 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 		for (E e : eList) 
 		{
 			@SuppressWarnings("unchecked")
-			EntityCore<F> c = (EntityCore<F>) e;
-			F f = c.newForm();
+			EntityCore<F> eCore = (EntityCore<F>) e;
+			F f = eCore.toForm();
 			fList.add(f);
 		}
 		return fList;
 	}
 
 	@Override
-	public E create(E e) 
+	@SuppressWarnings("unchecked")
+	public E create(F f) 
 	{
-		@SuppressWarnings("unchecked")
-		EntityCore<F> ems = (EntityCore<F>) e;
-		ems.setId(0);
-		return repository.save(e);
+		FormCore<E> fCore = (FormCore<E>) f;
+		E e = fCore.toEntity();
+		EntityCore<F> eCore = (EntityCore<F>) e;
+		eCore.setId(0);
+		return repository.save((E)eCore);
 	}
 
 	@Override

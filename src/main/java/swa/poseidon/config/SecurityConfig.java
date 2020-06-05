@@ -19,16 +19,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyAppUserDetailsService myAppUserDetailsService;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/bidList/**", "/rating/**", "/ruleName/**", "/trade/**", "/curvePoint/**").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/user/**").permitAll()
-                .and().formLogin()  //login configuration
+        http.csrf().disable().authorizeRequests() // TODO CSRF ?
+//                .antMatchers("/bidList/**", "/rating/**", "/ruleName/**", "/trade/**", "/curvePoint/**").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers("**").permitAll()
+//                .antMatchers("/user/**").permitAll()
+/*                .and().formLogin()  //login configuration
                 .defaultSuccessUrl("/bidList/list")
                 .and().logout()    //logout configuration
                 .logoutUrl("/app-logout")
                 .logoutSuccessUrl("/")
                 .and().exceptionHandling() //exception handling configuration
-                .accessDeniedPage("/app/error");
+                .accessDeniedPage("/app/error")*/;
     }
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

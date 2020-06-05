@@ -71,7 +71,7 @@ public class Rule implements EntityCore<RuleForm>
 	}
 
 	@Override
-	public RuleForm newForm() {
+	public RuleForm toForm() {
 		return new RuleForm(this);
 	}
 }

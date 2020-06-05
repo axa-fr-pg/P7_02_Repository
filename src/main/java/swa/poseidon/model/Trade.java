@@ -111,7 +111,7 @@ public class Trade implements EntityCore<TradeForm>
 	}
 
 	@Override
-	public TradeForm newForm() {
+	public TradeForm toForm() {
 		return new TradeForm(this);
 	}
 }

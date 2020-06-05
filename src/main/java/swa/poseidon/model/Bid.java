@@ -8,10 +8,6 @@ import swa.poseidon.form.BidForm;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -28,17 +24,12 @@ public class Bid implements EntityCore<BidForm>
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer bidId;
 	
-	@NotBlank
 	@Column(length = 30)
 	String account;
 	
-	@NotBlank
 	@Column(length = 30)
 	String type;
 	
-	@NotNull
-	@Positive
-	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal bidQuantity;
 	
@@ -105,6 +96,14 @@ public class Bid implements EntityCore<BidForm>
 	@Column(length = 125)
 	String side;
 
+	public Bid (BidForm f)
+	{
+		bidId=f.getBidId();
+		account=f.getAccount();
+		type=f.getType();
+		bidQuantity=f.getBidQuantity();
+	}
+	
 	public Bid (String account, String type, BigDecimal bidQuantity)
 	{
 		// bidId set to 0
@@ -119,7 +118,7 @@ public class Bid implements EntityCore<BidForm>
 	}
 
 	@Override
-	public BidForm newForm() {
+	public BidForm toForm() {
 		return new BidForm(this);
 	}
 }

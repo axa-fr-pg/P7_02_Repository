@@ -61,7 +61,7 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	}
 
 	@Override
-	public CurvePointForm newForm() 
+	public CurvePointForm toForm() 
 	{
 		return new CurvePointForm(this);
 	}
