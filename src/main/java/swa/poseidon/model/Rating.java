@@ -64,4 +64,18 @@ public class Rating implements EntityCore<RatingForm>
 	public RatingForm toForm() {
 		return new RatingForm(this);
 	}
+
+	@Override
+	public EntityCore<RatingForm> newTestEntityWithIdZero(int index) 
+	{
+		return (EntityCore<RatingForm>) new Rating("moodysRating"+index, "standPoorRating"+index, "fitchRating"+index, index*11);
+	}
+
+	@Override
+	public EntityCore<RatingForm> newTestEntityWithGivenId(int index) 
+	{
+		EntityCore<RatingForm> ec = newTestEntityWithIdZero(index);
+		ec.setId(index);
+		return ec;
+	}
 }

@@ -123,4 +123,16 @@ public class Bid implements EntityCore<BidForm>
 	{
 		return new BidForm(this);
 	}
+
+	@Override
+	public EntityCore<BidForm> newTestEntityWithIdZero(int index) {
+		return (EntityCore<BidForm>) new Bid("account"+index, "type"+index, new BigDecimal(index*11.0));
+	}
+
+	@Override
+	public EntityCore<BidForm> newTestEntityWithGivenId(int index) {
+		EntityCore<BidForm> ec = newTestEntityWithIdZero(index);
+		ec.setId(index);
+		return ec;
+	}
 }

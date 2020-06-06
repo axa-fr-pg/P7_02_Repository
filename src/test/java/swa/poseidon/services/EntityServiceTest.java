@@ -1,14 +1,11 @@
 package swa.poseidon.services;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import static org.mockito.ArgumentMatchers.any;
-import swa.poseidon.form.BidForm;
-import swa.poseidon.model.Bid;
-import swa.poseidon.repositories.BidRepository;
+
+import swa.poseidon.form.FormCore;
+import swa.poseidon.model.EntityCore;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,129 +13,121 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-@SpringBootTest
-public class EntityServiceTest // generic service --> can be tested with one entity
+public class EntityServiceTest<E,F>
 {
-	@MockBean
-	private BidRepository bidRepository;
+	private Supplier<E> supplier;
+	private E entity;
+	private EntityCore<F> entityCore;
 	
-	@Autowired
-	private BidService bidService;
-	
-	static public Bid newTestBidWithIdZero(int index) 
+	@SuppressWarnings("unchecked")
+	public EntityServiceTest(Supplier<E> contructorSupplier) 
 	{
-		return new Bid ("account"+index, "type"+index, new BigDecimal(index*1.0));
-	}
-			
-	static public Bid newTestBidWithGivenId(Integer id) 
-	{
-		Bid b = new Bid ("account"+id, "type"+id, new BigDecimal(id*1.0));
-		b.setId(id);
-		return b;
+	    supplier = contructorSupplier;
+	    entity = supplier.get();
+	    entityCore = (EntityCore<F>) entity;
 	}
 	
-	@BeforeEach
-	public void cleanDataBase()
-	{
-		bidRepository.deleteAll();
-	}
-	
-	@Test
-	public void givenBidList_readAll_returnsCorrectList() {
-		// GIVEN
-		Bid b1 =  newTestBidWithIdZero(1);
-		Bid b2 =  newTestBidWithIdZero(2);
-		Bid b3 =  newTestBidWithIdZero(3);
-		List<Bid> bidList = Arrays.asList(b1, b2, b3);
-		when(bidRepository.findAll()).thenReturn(bidList);
-		// WHEN
-		List<BidForm> bidFormList = bidService.readAll();
-		// THEN
-		assertNotNull(bidFormList);
-		assertEquals(3, bidFormList.size());
-		BidForm bf1 = bidFormList.get(0);
-		BidForm bf2 = bidFormList.get(1);
-		BidForm bf3 = bidFormList.get(2);
-		assertEquals(b1.getBidId(), bf1.getBidId());
-		assertEquals(b2.getAccount(), bf2.getAccount());
-		assertEquals(b3.getType(), bf3.getType());
-		assertEquals(b1.getBidQuantity(), bf1.getBidQuantity());
-	}
-	
-	@Test
-	public void givenNewBid_create_generatesNewId()
+	@SuppressWarnings("unchecked")
+	public void givenEntityList_readAll_returnsCorrectFormList(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
 	{
 		// GIVEN
-		BidForm given =  newTestBidWithIdZero(1).toForm();
-		Bid expected =  newTestBidWithGivenId(1);
-		when(bidRepository.save(any(Bid.class))).thenReturn(expected);
+		E e1 =  (E) entityCore.newTestEntityWithGivenId(1);
+		E e2 =  (E) entityCore.newTestEntityWithGivenId(2);
+		E e3 =  (E) entityCore.newTestEntityWithGivenId(3);
+		List<E> entityList = Arrays.asList(e1, e2, e3);
+		when(repository.findAll()).thenReturn(entityList);
 		// WHEN
-		Bid result = bidService.create(given);
+		List<F> formList = service.readAll();
 		// THEN
-		assertNotNull(result);
-		assertEquals(expected.getBidId(), result.getBidId());
+		assertNotNull(formList);
+		assertEquals(3, formList.size());
+		FormCore<E> f1 = (FormCore<E>) formList.get(0);
+		FormCore<E> f2 = (FormCore<E>) formList.get(1);
+		FormCore<E> f3 = (FormCore<E>) formList.get(2);
+		assertTrue(f1.matches(e1));
+		assertTrue(f2.matches(e2));
+		assertTrue(f3.matches(e3));
 	}
 	
-	@Test
-	public void givenBidFound_read_returnsCorrectBid() {
+	@SuppressWarnings("unchecked")
+	public void givenValidForm_create_generatesNewId(JpaRepository<E,Integer> repository, EntityService<E,F> service)
+	{
 		// GIVEN
-		Bid expected =  newTestBidWithGivenId(1);
-		when(bidRepository.findById(expected.getBidId())).thenReturn(Optional.of(expected));
+		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
+		F given =  (F) entityCore.newTestEntityWithIdZero(1).toForm();
+		when(repository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
-		Bid result = bidService.read(expected.getBidId());
+		EntityCore<F> resultEntity = (EntityCore<F>) service.create(given);
 		// THEN
-		assertNotNull(result);
-		assertEquals(expected.getBidId(), result.getBidId());
+		assertNotNull(resultEntity);
+		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
+		assertEquals(1, resultForm.id());
 	}
 	
-	@Test
-	public void givenBidNotFound_read_throwsNoSuchElementException() {
+	@SuppressWarnings("unchecked")
+	public void givenExistingEntity_read_returnsCorrectEntity(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	{
+		// GIVEN
+		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
+		when(repository.findById(1)).thenReturn(Optional.of(expected));
+		// WHEN
+		EntityCore<F> resultEntity = (EntityCore<F>) service.read(1);
+		// THEN
+		assertNotNull(resultEntity);
+		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
+		assertEquals(1, resultForm.id());
+	}
+	
+	public void givenEntityNotFound_read_throwsNoSuchElementException(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	{
 		// GIVEN
 		Integer id = 999;
-		when(bidRepository.findById(id)).thenReturn(Optional.empty());
+		when(repository.findById(id)).thenReturn(Optional.empty());
 		// WHEN & THEN
-		assertThrows(NoSuchElementException.class, () -> bidService.read(id));
+		assertThrows(NoSuchElementException.class, () -> service.read(id));
 	}
 	
-	@Test
-	public void givenBid_update_savesBid()
+	@SuppressWarnings("unchecked")
+	public void givenForm_update_returnsSavedEntity(JpaRepository<E,Integer> repository, EntityService<E,F> service)
 	{
 		// GIVEN
-		Bid expected =  newTestBidWithGivenId(1);
-		BidForm given =  expected.toForm();
-		when(bidRepository.findById(1)).thenReturn((Optional<Bid>) Optional.of(expected));
-		when(bidRepository.save(any(Bid.class))).thenReturn(expected);
+		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
+		F given =  (F) entityCore.newTestEntityWithGivenId(1).toForm();
+		when(repository.findById(1)).thenReturn((Optional<E>) Optional.of(expected));
+		when(repository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
-		Bid result = bidService.update(given);
+		EntityCore<F> resultEntity = (EntityCore<F>) service.update(given);
 		// THEN
-		assertNotNull(result);
-		assertEquals(expected.getBidId(), result.getBidId());
+		assertNotNull(resultEntity);
+		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
+		assertEquals(1, resultForm.id());
 	}
 		
 	
-	@Test
-	public void givenBidFound_delete_returnsTrue() {
+	public void givenExistingEntity_delete_returnsTrue(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	{
 		// GIVEN
-		Bid expected =  newTestBidWithGivenId(1);
-		when(bidRepository.findById(expected.getBidId())).thenReturn(Optional.of(expected));
+		@SuppressWarnings("unchecked")
+		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
+		when(repository.findById(1)).thenReturn(Optional.of(expected));
 		// WHEN
-		boolean result = bidService.delete(expected.getBidId());
+		boolean result = service.delete(1);
 		// THEN
 		assertTrue(result);
 	}
 	
-	@Test
-	public void givenBidNotFound_delete_throwsNoSuchElementException() {
+	public void givenEntityNotFound_delete_throwsNoSuchElementException(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	{
 		// GIVEN
 		Integer id = 999;
-		when(bidRepository.findById(id)).thenReturn(Optional.empty());
+		when(repository.findById(id)).thenReturn(Optional.empty());
 		// WHEN & THEN
-		assertThrows(NoSuchElementException.class, () -> bidService.delete(id));
+		assertThrows(NoSuchElementException.class, () -> service.delete(id));
 	}	
 }

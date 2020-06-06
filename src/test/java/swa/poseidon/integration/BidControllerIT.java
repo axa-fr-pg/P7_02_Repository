@@ -50,7 +50,7 @@ public class BidControllerIT {
 	
 	private Bid saveNewTestBidToRepository(int index)
 	{
-		return bidRepository.save(EntityServiceTest.newTestBidWithIdZero(index));
+		return bidRepository.save(EntityServiceTest.newTestEntityWithIdZero(index));
 	}
 	
 	@BeforeEach
@@ -81,7 +81,7 @@ public class BidControllerIT {
 	public void givenValidBidForm_post_returnsCreatedBidForm() throws Exception 
 	{
 		// GIVEN
-		BidForm form =  EntityServiceTest.newTestBidWithIdZero(1).toForm();
+		BidForm form =  EntityServiceTest.newTestEntityWithIdZero(1).toForm();
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
@@ -132,7 +132,7 @@ public class BidControllerIT {
 	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
 	{
 		// GIVEN
-		BidForm form = EntityServiceTest.newTestBidWithGivenId(1).toForm();
+		BidForm form = EntityServiceTest.newTestEntityWithGivenId(1).toForm();
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + 1)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);

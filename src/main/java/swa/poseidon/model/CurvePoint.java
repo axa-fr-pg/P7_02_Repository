@@ -54,6 +54,14 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 		this.value=value;
 	}
 
+	public CurvePoint (CurvePointForm f)
+	{
+		this.curvePointId=f.getCurvePointId();
+		this.curveId=f.getCurveId();
+		this.term=f.getTerm();
+		this.value=f.getValue();
+	}
+
 	@Override
 	public void setId(Integer id) 
 	{
@@ -64,5 +72,19 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	public CurvePointForm toForm() 
 	{
 		return new CurvePointForm(this);
+	}
+
+	@Override
+	public EntityCore<CurvePointForm> newTestEntityWithIdZero(int index) 
+	{
+		return (EntityCore<CurvePointForm>) new CurvePoint(index, new BigDecimal(11.0 * index), new BigDecimal(12.0 * index));
+	}
+
+	@Override
+	public EntityCore<CurvePointForm> newTestEntityWithGivenId(int index) 
+	{
+		EntityCore<CurvePointForm> ec = newTestEntityWithIdZero(index);
+		ec.setId(index);
+		return ec;
 	}
 }

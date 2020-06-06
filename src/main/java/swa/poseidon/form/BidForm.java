@@ -39,6 +39,7 @@ public class BidForm implements FormCore<Bid>
 		bidQuantity=b.getBidQuantity();
 	}
 	
+	@Override
 	public boolean matches(Bid b)
 	{
 		if (bidId.intValue() != b.getBidId().intValue()) return false;

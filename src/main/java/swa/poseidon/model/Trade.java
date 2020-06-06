@@ -114,4 +114,16 @@ public class Trade implements EntityCore<TradeForm>
 	public TradeForm toForm() {
 		return new TradeForm(this);
 	}
+
+	@Override
+	public EntityCore<TradeForm> newTestEntityWithIdZero(int index) {
+		return (EntityCore<TradeForm>) new Trade("account"+index, "type"+index, new BigDecimal(index*11.0));
+	}
+
+	@Override
+	public EntityCore<TradeForm> newTestEntityWithGivenId(int index) {
+		EntityCore<TradeForm> ec = newTestEntityWithIdZero(index);
+		ec.setId(index);
+		return ec;
+	}
 }

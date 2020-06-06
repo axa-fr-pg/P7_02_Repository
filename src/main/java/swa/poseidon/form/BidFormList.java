@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BidFormList
+public class BidFormList devenu inutile je pense mettre ArrayList
 {
 	List<BidForm> bidFormList;
 }
