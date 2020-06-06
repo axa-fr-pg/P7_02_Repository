@@ -8,13 +8,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.util.NestedServletException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import swa.poseidon.controllers.ExceptionManager;
 import swa.poseidon.form.BidForm;
-import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
-import swa.poseidon.services.EntityServiceTest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,9 +45,11 @@ public class BidControllerIT {
 	@Autowired
 	private BidRepository bidRepository;
 	
+	private Bid bid = new Bid();
+	
 	private Bid saveNewTestBidToRepository(int index)
 	{
-		return bidRepository.save(EntityServiceTest.newTestEntityWithIdZero(index));
+		return bidRepository.save((Bid)bid.newTestEntityWithGivenId(index));
 	}
 	
 	@BeforeEach
@@ -68,29 +67,32 @@ public class BidControllerIT {
 		Bid b3 =  saveNewTestBidToRepository(3);		
 		// WHEN
 		String responseString = mvc.perform(get("/bids/list")).andDo(print()).andReturn().getResponse().getContentAsString();
-		BidFormList responseObject = objectMapper.readValue(responseString, BidFormList.class);
+		List<Object> responseObject = Arrays.asList(objectMapper.readValue(responseString, BidForm[].class));
 		// THEN
 		assertNotNull(responseObject); 
-		assertEquals(3, responseObject.getBidFormList().size());
-		assertTrue(responseObject.getBidFormList().get(0).matches(b1));
-		assertTrue(responseObject.getBidFormList().get(1).matches(b2));
-		assertTrue(responseObject.getBidFormList().get(2).matches(b3));
+		assertEquals(3, responseObject.size());
+		BidForm f1 = (BidForm) responseObject.get(0);
+		assertTrue(f1.matches(b1));
+		BidForm f2 = (BidForm) responseObject.get(1);
+		assertTrue(f2.matches(b2));
+		BidForm f3 = (BidForm) responseObject.get(2);
+		assertTrue(f3.matches(b3));
 	}
 	
 	@Test
 	public void givenValidBidForm_post_returnsCreatedBidForm() throws Exception 
 	{
 		// GIVEN
-		BidForm form =  EntityServiceTest.newTestEntityWithIdZero(1).toForm();
+		BidForm form =  bid.newTestEntityWithIdZero(1).toForm();
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN
 		mvc.perform(builder).andDo(print()).andExpect(status().isCreated())
 			.andExpect(jsonPath("$.bidId").value(greaterThan(0))) 
-			.andExpect(jsonPath("$.account").value("account1"))
-			.andExpect(jsonPath("$.type").value("type1")) 
-			.andExpect(jsonPath("$.bidQuantity").value(1));
+			.andExpect(jsonPath("$.account").value(form.getAccount()))
+			.andExpect(jsonPath("$.type").value(form.getType())) 
+			.andExpect(jsonPath("$.bidQuantity").value(form.getBidQuantity()));
 	}
 	
 	@Test
@@ -123,16 +125,16 @@ public class BidControllerIT {
 		// WHEN & THEN
 		mvc.perform(builder).andDo(print()).andExpect(status().isOk())
 			.andExpect(jsonPath("$.bidId").value(id)) 
-			.andExpect(jsonPath("$.account").value("account1"))
-			.andExpect(jsonPath("$.type").value("type1")) 
-			.andExpect(jsonPath("$.bidQuantity").value(1));
+			.andExpect(jsonPath("$.account").value(form.getAccount()))
+			.andExpect(jsonPath("$.type").value(form.getType())) 
+			.andExpect(jsonPath("$.bidQuantity").value(form.getBidQuantity()));
 	}
 	
 	@Test
 	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
 	{
 		// GIVEN
-		BidForm form = EntityServiceTest.newTestEntityWithGivenId(1).toForm();
+		BidForm form =  bid.newTestEntityWithGivenId(1).toForm();
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + 1)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);

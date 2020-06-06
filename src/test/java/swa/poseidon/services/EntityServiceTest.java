@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -40,7 +40,7 @@ public class EntityServiceTest<E,F>
 		E e1 =  (E) entityCore.newTestEntityWithGivenId(1);
 		E e2 =  (E) entityCore.newTestEntityWithGivenId(2);
 		E e3 =  (E) entityCore.newTestEntityWithGivenId(3);
-		List<E> entityList = Arrays.asList(e1, e2, e3);
+		List<E> entityList = (List<E>) Arrays.asList(e1, e2, e3);
 		when(repository.findAll()).thenReturn(entityList);
 		// WHEN
 		List<F> formList = service.readAll();

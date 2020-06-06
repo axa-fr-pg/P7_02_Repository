@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import swa.poseidon.form.BidForm;
-import swa.poseidon.form.BidFormList;
 import swa.poseidon.services.BidService;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -25,9 +26,9 @@ public class BidController
 	@Autowired BidService bidService;
 
     @GetMapping("/list")
-    public BidFormList list()
+    public List<BidForm> list()
     {
-        return new BidFormList(bidService.readAll());
+        return bidService.readAll();
     }
 
     @PostMapping("/add")

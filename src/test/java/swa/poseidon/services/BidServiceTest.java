@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -55,7 +55,7 @@ public class BidServiceTest
 		Bid b1 =  newTestBidWithIdZero(1);
 		Bid b2 =  newTestBidWithIdZero(2);
 		Bid b3 =  newTestBidWithIdZero(3);
-		List<Bid> bidList = Arrays.asList(b1, b2, b3);
+		List<Bid> bidList = (List<Bid>) Arrays.asList(b1, b2, b3);
 		when(bidRepository.findAll()).thenReturn(bidList);
 		// WHEN
 		List<BidForm> bidFormList = bidService.readAll();

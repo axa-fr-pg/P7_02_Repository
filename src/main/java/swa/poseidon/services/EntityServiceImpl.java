@@ -18,7 +18,7 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 	@Override
 	public List<F> readAll()
 	{
-		List<E> eList = repository.findAll();
+		List<E> eList = (List<E>) repository.findAll();
 		List<F> fList = new ArrayList<F>();
 		for (E e : eList) 
 		{
