@@ -54,23 +54,4 @@ public class BidController
     {
         return new ResponseEntity<Boolean>(bidService.delete(id), HttpStatus.ACCEPTED);
     }
-    
-    
-    
-    
-    //TODO gérer les exceptions
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

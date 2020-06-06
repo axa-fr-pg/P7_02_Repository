@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -27,6 +28,7 @@ import org.springframework.web.util.NestedServletException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import swa.poseidon.controllers.ExceptionManager;
 import swa.poseidon.form.BidForm;
 import swa.poseidon.form.BidFormList;
 import swa.poseidon.model.Bid;
@@ -92,7 +94,7 @@ public class BidControllerIT {
 	}
 	
 	@Test
-	public void givenInvalidBidForm_post_returnsBadRequestStatus() throws Exception 
+	public void givenInvalidBidForm_post_returnsBadRequestStatusAndMessages() throws Exception 
 	{
 		// GIVEN
 		BidForm form = new Bid("", "", new BigDecimal(0)).toForm();
@@ -100,7 +102,13 @@ public class BidControllerIT {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN & THEN
-		mvc.perform(builder).andDo(print()).andExpect(status().isBadRequest());
+		String responseString = mvc.perform(builder).andDo(print())
+			.andExpect(status().isBadRequest())
+			.andReturn().getResponse().getContentAsString();
+		@SuppressWarnings("unchecked")
+		ArrayList<String> responseObject = objectMapper.readValue(responseString, ArrayList.class);
+		assertNotNull(responseObject); 
+		assertEquals(3, responseObject.size());
 	}
 	
 	@Test
@@ -128,10 +136,11 @@ public class BidControllerIT {
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + 1)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
-		// WHEN & THEN
-		assertThatExceptionOfType(NestedServletException.class)
-	    	.isThrownBy(() -> mvc.perform(builder))
-	    	.withRootCauseInstanceOf(NoSuchElementException.class);
+		// WHEN
+		String responseString = mvc.perform(builder).andDo(print()).andReturn().getResponse().getContentAsString();
+		// THEN
+		assertEquals(ExceptionManager.MESSAGE_NOT_SUCH_ELEMENT, responseString);
+
 	}
 	
 	@Test
@@ -153,10 +162,10 @@ public class BidControllerIT {
 	{
 		// GIVEN
 		Integer id = 999;
-		// WHEN & THEN
-		assertThatExceptionOfType(NestedServletException.class)
-	    	.isThrownBy(() -> mvc.perform(get("/bids/read/"+id)))
-	    	.withRootCauseInstanceOf(NoSuchElementException.class);
+		// WHEN 
+		String responseString = mvc.perform(get("/bids/read/"+id)).andDo(print()).andReturn().getResponse().getContentAsString();
+		// THEN
+		assertEquals(ExceptionManager.MESSAGE_NOT_SUCH_ELEMENT, responseString);
 	}	
 
 	@Test
@@ -173,13 +182,13 @@ public class BidControllerIT {
 	}	
 
 	@Test
-	public void givenWrongBidId_delete_throwsNoSuchElementException() throws Exception 
+	public void givenWrongBidId_delete_returnsNoSuchElementMessage() throws Exception 
 	{
 		// GIVEN
 		Integer id = 999;
-		// WHEN & THEN
-		assertThatExceptionOfType(NestedServletException.class)
-	    	.isThrownBy(() -> mvc.perform(delete("/bids/delete/"+id)))
-	    	.withRootCauseInstanceOf(NoSuchElementException.class);
+		// WHEN 
+		String responseString = mvc.perform(delete("/bids/delete/"+id)).andDo(print()).andReturn().getResponse().getContentAsString();
+		// THEN
+		assertEquals(ExceptionManager.MESSAGE_NOT_SUCH_ELEMENT, responseString);
 	}	
 }
