@@ -126,4 +126,9 @@ public class Trade implements EntityCore<TradeForm>
 		ec.setId(index);
 		return ec;
 	}
+
+	@Override
+	public EntityCore<TradeForm> newInvalidTestEntity() {
+		return (EntityCore<TradeForm>) new Trade("", "", new BigDecimal(123456789.12));
+	}
 }

@@ -9,10 +9,6 @@ import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.CurvePointForm;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -73,7 +69,7 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	@Override
 	public EntityCore<CurvePointForm> newValidTestEntityWithIdZero(int index) 
 	{
-		return (EntityCore<CurvePointForm>) new CurvePoint(index, new BigDecimal(11.0 * index), new BigDecimal(12.0 * index));
+		return (EntityCore<CurvePointForm>) new CurvePoint(index*11, new BigDecimal(12.0 * index), new BigDecimal(13.0 * index));
 	}
 
 	@Override
@@ -87,6 +83,6 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	@Override
 	public EntityCore<CurvePointForm> newInvalidTestEntity() 
 	{
-		return (EntityCore<CurvePointForm>) new CurvePoint(0, new BigDecimal(123456789.11), new BigDecimal(123456789.11));
+		return (EntityCore<CurvePointForm>) new CurvePoint(0, new BigDecimal(123456789.12), new BigDecimal(123456789.12));
 	}
 }

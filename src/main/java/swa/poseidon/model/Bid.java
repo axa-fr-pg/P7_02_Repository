@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.BidForm;
-
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import org.hibernate.annotations.CreationTimestamp;
@@ -134,5 +133,11 @@ public class Bid implements EntityCore<BidForm>
 		EntityCore<BidForm> ec = newValidTestEntityWithIdZero(index);
 		ec.setId(index);
 		return ec;
+	}
+
+	@Override
+	public EntityCore<BidForm> newInvalidTestEntity() 
+	{
+		return (EntityCore<BidForm>) new Bid("", "", new BigDecimal(123456789.12));
 	}
 }

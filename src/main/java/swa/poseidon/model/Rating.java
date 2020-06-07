@@ -78,4 +78,9 @@ public class Rating implements EntityCore<RatingForm>
 		ec.setId(index);
 		return ec;
 	}
+
+	@Override
+	public EntityCore<RatingForm> newInvalidTestEntity() {
+		return (EntityCore<RatingForm>) new Rating("", "", "", -1);
+	}
 }

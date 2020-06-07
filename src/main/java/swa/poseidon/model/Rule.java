@@ -86,4 +86,9 @@ public class Rule implements EntityCore<RuleForm>
 		ec.setId(index);
 		return ec;
 	}
+
+	@Override
+	public EntityCore<RuleForm> newInvalidTestEntity() {
+		return (EntityCore<RuleForm>) new Rule("", "", "", "", "", "");
+	}
 }
