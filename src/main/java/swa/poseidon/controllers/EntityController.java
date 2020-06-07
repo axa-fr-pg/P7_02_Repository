@@ -19,7 +19,7 @@ import swa.poseidon.services.EntityService;
 
 public class EntityController<E,F> 
 {
-	EntityService<E,F> entityService;
+	protected EntityService<E,F> entityService;
 	
     @GetMapping("/list")
     public List<F> list()

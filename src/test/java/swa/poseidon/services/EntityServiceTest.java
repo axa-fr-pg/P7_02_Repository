@@ -1,5 +1,6 @@
 package swa.poseidon.services;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -17,33 +18,26 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class EntityServiceTest<E,F>
 {
-	private Supplier<E> supplier;
-	private E entity;
-	private EntityCore<F> entityCore;
+	protected JpaRepository<E,Integer> entityRepository;
+	protected EntityService<E,F> entityService;
+	protected E entity;
+	protected EntityCore<F> entityCore;
 	
+	@Test
 	@SuppressWarnings("unchecked")
-	public EntityServiceTest(Supplier<E> contructorSupplier) 
-	{
-	    supplier = contructorSupplier;
-	    entity = supplier.get();
-	    entityCore = (EntityCore<F>) entity;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void givenEntityList_readAll_returnsCorrectFormList(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	public void givenEntityList_readAll_returnsCorrectFormList() 
 	{
 		// GIVEN
 		E e1 =  (E) entityCore.newTestEntityWithGivenId(1);
 		E e2 =  (E) entityCore.newTestEntityWithGivenId(2);
 		E e3 =  (E) entityCore.newTestEntityWithGivenId(3);
 		List<E> entityList = (List<E>) Arrays.asList(e1, e2, e3);
-		when(repository.findAll()).thenReturn(entityList);
+		when(entityRepository.findAll()).thenReturn(entityList);
 		// WHEN
-		List<F> formList = service.readAll();
+		List<F> formList = entityService.readAll();
 		// THEN
 		assertNotNull(formList);
 		assertEquals(3, formList.size());
@@ -55,54 +49,58 @@ public class EntityServiceTest<E,F>
 		assertTrue(f3.matches(e3));
 	}
 	
+	@Test
 	@SuppressWarnings("unchecked")
-	public void givenValidForm_create_generatesNewId(JpaRepository<E,Integer> repository, EntityService<E,F> service)
+	public void givenValidForm_create_generatesNewId()
 	{
 		// GIVEN
 		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
 		F given =  (F) entityCore.newTestEntityWithIdZero(1).toForm();
-		when(repository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
+		when(entityRepository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
-		EntityCore<F> resultEntity = (EntityCore<F>) service.create(given);
+		EntityCore<F> resultEntity = (EntityCore<F>) entityService.create(given);
 		// THEN
 		assertNotNull(resultEntity);
 		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
 		assertEquals(1, resultForm.id());
 	}
 	
+	@Test
 	@SuppressWarnings("unchecked")
-	public void givenExistingEntity_read_returnsCorrectEntity(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	public void givenExistingEntity_read_returnsCorrectEntity() 
 	{
 		// GIVEN
 		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
-		when(repository.findById(1)).thenReturn(Optional.of(expected));
+		when(entityRepository.findById(1)).thenReturn(Optional.of(expected));
 		// WHEN
-		EntityCore<F> resultEntity = (EntityCore<F>) service.read(1);
+		EntityCore<F> resultEntity = (EntityCore<F>) entityService.read(1);
 		// THEN
 		assertNotNull(resultEntity);
 		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
 		assertEquals(1, resultForm.id());
 	}
 	
-	public void givenEntityNotFound_read_throwsNoSuchElementException(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	@Test
+	public void givenEntityNotFound_read_throwsNoSuchElementException() 
 	{
 		// GIVEN
 		Integer id = 999;
-		when(repository.findById(id)).thenReturn(Optional.empty());
+		when(entityRepository.findById(id)).thenReturn(Optional.empty());
 		// WHEN & THEN
-		assertThrows(NoSuchElementException.class, () -> service.read(id));
+		assertThrows(NoSuchElementException.class, () -> entityService.read(id));
 	}
 	
+	@Test
 	@SuppressWarnings("unchecked")
-	public void givenForm_update_returnsSavedEntity(JpaRepository<E,Integer> repository, EntityService<E,F> service)
+	public void givenForm_update_returnsSavedEntity()
 	{
 		// GIVEN
 		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
 		F given =  (F) entityCore.newTestEntityWithGivenId(1).toForm();
-		when(repository.findById(1)).thenReturn((Optional<E>) Optional.of(expected));
-		when(repository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
+		when(entityRepository.findById(1)).thenReturn((Optional<E>) Optional.of(expected));
+		when(entityRepository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
-		EntityCore<F> resultEntity = (EntityCore<F>) service.update(given);
+		EntityCore<F> resultEntity = (EntityCore<F>) entityService.update(given);
 		// THEN
 		assertNotNull(resultEntity);
 		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
@@ -110,24 +108,26 @@ public class EntityServiceTest<E,F>
 	}
 		
 	
-	public void givenExistingEntity_delete_returnsTrue(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	@Test
+	public void givenExistingEntity_delete_returnsTrue() 
 	{
 		// GIVEN
 		@SuppressWarnings("unchecked")
 		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
-		when(repository.findById(1)).thenReturn(Optional.of(expected));
+		when(entityRepository.findById(1)).thenReturn(Optional.of(expected));
 		// WHEN
-		boolean result = service.delete(1);
+		boolean result = entityService.delete(1);
 		// THEN
 		assertTrue(result);
 	}
 	
-	public void givenEntityNotFound_delete_throwsNoSuchElementException(JpaRepository<E,Integer> repository, EntityService<E,F> service) 
+	@Test
+	public void givenEntityNotFound_delete_throwsNoSuchElementException() 
 	{
 		// GIVEN
 		Integer id = 999;
-		when(repository.findById(id)).thenReturn(Optional.empty());
+		when(entityRepository.findById(id)).thenReturn(Optional.empty());
 		// WHEN & THEN
-		assertThrows(NoSuchElementException.class, () -> service.delete(id));
+		assertThrows(NoSuchElementException.class, () -> entityService.delete(id));
 	}	
 }

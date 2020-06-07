@@ -12,7 +12,7 @@ import swa.poseidon.services.CurvePointService;
 
 @RestController
 @RequestMapping("/curvePoints")
-public class CurveController extends EntityController<CurvePoint, CurvePointForm>
+public class CurvePointController extends EntityController<CurvePoint, CurvePointForm>
 {
 	@Autowired
 	CurvePointService autowiredService;
