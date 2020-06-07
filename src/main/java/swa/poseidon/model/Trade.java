@@ -116,13 +116,13 @@ public class Trade implements EntityCore<TradeForm>
 	}
 
 	@Override
-	public EntityCore<TradeForm> newTestEntityWithIdZero(int index) {
+	public EntityCore<TradeForm> newValidTestEntityWithIdZero(int index) {
 		return (EntityCore<TradeForm>) new Trade("account"+index, "type"+index, new BigDecimal(index*11.0));
 	}
 
 	@Override
-	public EntityCore<TradeForm> newTestEntityWithGivenId(int index) {
-		EntityCore<TradeForm> ec = newTestEntityWithIdZero(index);
+	public EntityCore<TradeForm> newValidTestEntityWithGivenId(int index) {
+		EntityCore<TradeForm> ec = newValidTestEntityWithIdZero(index);
 		ec.setId(index);
 		return ec;
 	}

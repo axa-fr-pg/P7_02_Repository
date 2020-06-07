@@ -17,7 +17,7 @@ import swa.poseidon.form.FormCore;
 import swa.poseidon.model.EntityCore;
 import swa.poseidon.services.EntityService;
 
-public class EntityController<E,F> 
+public abstract class EntityController<E,F> 
 {
 	protected EntityService<E,F> entityService;
 	

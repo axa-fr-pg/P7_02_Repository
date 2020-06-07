@@ -26,15 +26,11 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer curvePointId;
 	
-	@NotNull
-	@Positive
 	Integer curveId;
 	
-	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal term;
 	
-	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal value;
 
@@ -75,16 +71,22 @@ public class CurvePoint implements EntityCore<CurvePointForm>
 	}
 
 	@Override
-	public EntityCore<CurvePointForm> newTestEntityWithIdZero(int index) 
+	public EntityCore<CurvePointForm> newValidTestEntityWithIdZero(int index) 
 	{
 		return (EntityCore<CurvePointForm>) new CurvePoint(index, new BigDecimal(11.0 * index), new BigDecimal(12.0 * index));
 	}
 
 	@Override
-	public EntityCore<CurvePointForm> newTestEntityWithGivenId(int index) 
+	public EntityCore<CurvePointForm> newValidTestEntityWithGivenId(int index) 
 	{
-		EntityCore<CurvePointForm> ec = newTestEntityWithIdZero(index);
+		EntityCore<CurvePointForm> ec = newValidTestEntityWithIdZero(index);
 		ec.setId(index);
 		return ec;
+	}
+
+	@Override
+	public EntityCore<CurvePointForm> newInvalidTestEntity() 
+	{
+		return (EntityCore<CurvePointForm>) new CurvePoint(0, new BigDecimal(123456789.11), new BigDecimal(123456789.11));
 	}
 }

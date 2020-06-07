@@ -4,6 +4,7 @@ public interface EntityCore<F>
 {
 	public void setId(Integer id);
 	public F toForm();
-	public EntityCore<F> newTestEntityWithIdZero(int index);
-	public EntityCore<F> newTestEntityWithGivenId(int index);
+	public EntityCore<F> newValidTestEntityWithIdZero(int index);
+	public EntityCore<F> newValidTestEntityWithGivenId(int index);
+	public EntityCore<F> newInvalidTestEntity();
 }

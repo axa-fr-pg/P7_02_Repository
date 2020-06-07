@@ -2,6 +2,10 @@ package swa.poseidon.form;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +18,15 @@ import swa.poseidon.model.CurvePoint;
 public class CurvePointForm implements FormCore<CurvePoint>
 {
 	Integer curvePointId;
+	
+	@NotNull
+	@Positive
 	Integer curveId;
+	
+	@Digits(integer=8, fraction=1, message="term must have format 8.1")
 	BigDecimal term;
+
+	@Digits(integer=8, fraction=1, message="term must have format 8.1")
 	BigDecimal value;
 
 	public CurvePointForm(CurvePoint cp)
@@ -40,8 +51,8 @@ public class CurvePointForm implements FormCore<CurvePoint>
 	public boolean matches(CurvePoint e) {
 		if (curvePointId.intValue() != e.getCurvePointId().intValue()) return false;
 		if (curveId.intValue() != e.getCurveId().intValue()) return false;
-		if (!term.equals(e.getTerm())) return false;
-		if (!value.equals(e.getValue())) return false;
+		if (term.compareTo(e.getTerm())!=0) return false;
+		if (value.compareTo(e.getValue())!=0) return false;
 		return true;
 	}
 }

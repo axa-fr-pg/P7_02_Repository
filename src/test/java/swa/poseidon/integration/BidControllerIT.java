@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
@@ -15,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import swa.poseidon.controllers.ExceptionManager;
@@ -49,7 +51,7 @@ public class BidControllerIT {
 	
 	private Bid saveNewTestBidToRepository(int index)
 	{
-		return bidRepository.save((Bid)bid.newTestEntityWithGivenId(index));
+		return bidRepository.save((Bid)bid.newValidTestEntityWithGivenId(index));
 	}
 	
 	@BeforeEach
@@ -67,7 +69,8 @@ public class BidControllerIT {
 		Bid b3 =  saveNewTestBidToRepository(3);		
 		// WHEN
 		String responseString = mvc.perform(get("/bids/list")).andDo(print()).andReturn().getResponse().getContentAsString();
-		List<Object> responseObject = Arrays.asList(objectMapper.readValue(responseString, BidForm[].class));
+		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, BidForm.class);
+		List<BidForm> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
 		assertNotNull(responseObject); 
 		assertEquals(3, responseObject.size());
@@ -83,7 +86,7 @@ public class BidControllerIT {
 	public void givenValidBidForm_post_returnsCreatedBidForm() throws Exception 
 	{
 		// GIVEN
-		BidForm form =  bid.newTestEntityWithIdZero(1).toForm();
+		BidForm form =  bid.newValidTestEntityWithIdZero(1).toForm();
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/bids/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
@@ -134,7 +137,7 @@ public class BidControllerIT {
 	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
 	{
 		// GIVEN
-		BidForm form =  bid.newTestEntityWithGivenId(1).toForm();
+		BidForm form =  bid.newValidTestEntityWithGivenId(1).toForm();
 		String json = objectMapper.writeValueAsString(form);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/bids/update/" + 1)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);

@@ -76,13 +76,13 @@ public class Rule implements EntityCore<RuleForm>
 	}
 
 	@Override
-	public EntityCore<RuleForm> newTestEntityWithIdZero(int index) {
+	public EntityCore<RuleForm> newValidTestEntityWithIdZero(int index) {
 		return (EntityCore<RuleForm>) new Rule("name"+index, "description"+index, "json"+index, "template"+index, "sqlStr"+index, "sqlPart"+index);
 	}
 
 	@Override
-	public EntityCore<RuleForm> newTestEntityWithGivenId(int index) {
-		EntityCore<RuleForm> ec = newTestEntityWithIdZero(index);
+	public EntityCore<RuleForm> newValidTestEntityWithGivenId(int index) {
+		EntityCore<RuleForm> ec = newValidTestEntityWithIdZero(index);
 		ec.setId(index);
 		return ec;
 	}

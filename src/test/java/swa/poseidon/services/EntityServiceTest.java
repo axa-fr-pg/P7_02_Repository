@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class EntityServiceTest<E,F>
+public abstract class EntityServiceTest<E,F>
 {
 	protected JpaRepository<E,Integer> entityRepository;
 	protected EntityService<E,F> entityService;
@@ -31,9 +31,9 @@ public class EntityServiceTest<E,F>
 	public void givenEntityList_readAll_returnsCorrectFormList() 
 	{
 		// GIVEN
-		E e1 =  (E) entityCore.newTestEntityWithGivenId(1);
-		E e2 =  (E) entityCore.newTestEntityWithGivenId(2);
-		E e3 =  (E) entityCore.newTestEntityWithGivenId(3);
+		E e1 =  (E) entityCore.newValidTestEntityWithGivenId(1);
+		E e2 =  (E) entityCore.newValidTestEntityWithGivenId(2);
+		E e3 =  (E) entityCore.newValidTestEntityWithGivenId(3);
 		List<E> entityList = (List<E>) Arrays.asList(e1, e2, e3);
 		when(entityRepository.findAll()).thenReturn(entityList);
 		// WHEN
@@ -54,8 +54,8 @@ public class EntityServiceTest<E,F>
 	public void givenValidForm_create_generatesNewId()
 	{
 		// GIVEN
-		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
-		F given =  (F) entityCore.newTestEntityWithIdZero(1).toForm();
+		E expected =  (E) entityCore.newValidTestEntityWithGivenId(1);
+		F given =  (F) entityCore.newValidTestEntityWithIdZero(1).toForm();
 		when(entityRepository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
 		EntityCore<F> resultEntity = (EntityCore<F>) entityService.create(given);
@@ -70,7 +70,7 @@ public class EntityServiceTest<E,F>
 	public void givenExistingEntity_read_returnsCorrectEntity() 
 	{
 		// GIVEN
-		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
+		E expected =  (E) entityCore.newValidTestEntityWithGivenId(1);
 		when(entityRepository.findById(1)).thenReturn(Optional.of(expected));
 		// WHEN
 		EntityCore<F> resultEntity = (EntityCore<F>) entityService.read(1);
@@ -95,8 +95,8 @@ public class EntityServiceTest<E,F>
 	public void givenForm_update_returnsSavedEntity()
 	{
 		// GIVEN
-		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
-		F given =  (F) entityCore.newTestEntityWithGivenId(1).toForm();
+		E expected =  (E) entityCore.newValidTestEntityWithGivenId(1);
+		F given =  (F) entityCore.newValidTestEntityWithGivenId(1).toForm();
 		when(entityRepository.findById(1)).thenReturn((Optional<E>) Optional.of(expected));
 		when(entityRepository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
@@ -113,7 +113,7 @@ public class EntityServiceTest<E,F>
 	{
 		// GIVEN
 		@SuppressWarnings("unchecked")
-		E expected =  (E) entityCore.newTestEntityWithGivenId(1);
+		E expected =  (E) entityCore.newValidTestEntityWithGivenId(1);
 		when(entityRepository.findById(1)).thenReturn(Optional.of(expected));
 		// WHEN
 		boolean result = entityService.delete(1);

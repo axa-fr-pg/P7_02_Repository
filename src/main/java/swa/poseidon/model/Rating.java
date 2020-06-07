@@ -66,15 +66,15 @@ public class Rating implements EntityCore<RatingForm>
 	}
 
 	@Override
-	public EntityCore<RatingForm> newTestEntityWithIdZero(int index) 
+	public EntityCore<RatingForm> newValidTestEntityWithIdZero(int index) 
 	{
 		return (EntityCore<RatingForm>) new Rating("moodysRating"+index, "standPoorRating"+index, "fitchRating"+index, index*11);
 	}
 
 	@Override
-	public EntityCore<RatingForm> newTestEntityWithGivenId(int index) 
+	public EntityCore<RatingForm> newValidTestEntityWithGivenId(int index) 
 	{
-		EntityCore<RatingForm> ec = newTestEntityWithIdZero(index);
+		EntityCore<RatingForm> ec = newValidTestEntityWithIdZero(index);
 		ec.setId(index);
 		return ec;
 	}
