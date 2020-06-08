@@ -28,7 +28,7 @@ public class BidForm implements FormCore<Bid>
 	
 	@NotNull(message="bidQuantity is mandatory")
 	@Positive(message="bidQuantity must be positive")
-	@Digits(integer=8, fraction=1)
+	@Digits(integer=8, fraction=1, message="bidQuantity must have format 8.1")
 	BigDecimal bidQuantity;
 	
 	public BidForm(Bid b)

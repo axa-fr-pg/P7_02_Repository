@@ -19,8 +19,8 @@ public class CurvePointForm implements FormCore<CurvePoint>
 {
 	Integer curvePointId;
 	
-	@NotNull
-	@Positive
+	@NotNull(message="curveId is mandatory")
+	@Positive(message="curveId must be positive")
 	Integer curveId;
 	
 	@Digits(integer=8, fraction=1, message="term must have format 8.1")
