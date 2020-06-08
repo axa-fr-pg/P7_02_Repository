@@ -19,27 +19,27 @@ public class Rule implements EntityCore<RuleForm>
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer ruleId;
 	
-	@NotBlank
+	@NotBlank(message="name is mandatory")
 	@Column(length = 125)
 	String name;
 	
-	@NotBlank
+	@NotBlank(message="description is mandatory")
 	@Column(length = 125)
 	String description;
 	
-	@NotBlank
+	@NotBlank(message="json is mandatory")
 	@Column(length = 125)
 	String json;
 	
-	@NotBlank
+	@NotBlank(message="template is mandatory")
 	@Column(length = 125)
 	String template;
 	
-	@NotBlank
+	@NotBlank(message="sqlStr is mandatory")
 	@Column(length = 125)
 	String sqlStr;
 	
-	@NotBlank
+	@NotBlank(message="sqlPart is mandatory")
 	@Column(length = 125)
 	String sqlPart;
 	
