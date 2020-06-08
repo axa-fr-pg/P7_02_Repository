@@ -1,11 +1,7 @@
 package swa.poseidon.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,7 +25,6 @@ public class Trade implements EntityCore<TradeForm>
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer tradeId;
 	
-	@NotBlank
 	@Column(length = 30)
 	String account;
 	
@@ -37,21 +32,15 @@ public class Trade implements EntityCore<TradeForm>
 	@Column(length = 30)
 	String type;
 	
-	@NotNull
-	@Positive
-	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal buyQuantity;
 	
-	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal sellQuantity;
 	
-	@Digits(integer=8, fraction=2)
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal buyPrice;
 	
-	@Digits(integer=8, fraction=2)
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal sellPrice;
 	
@@ -103,6 +92,14 @@ public class Trade implements EntityCore<TradeForm>
 		this.account=account;
 		this.type=type;
 		this.buyQuantity=buyQuantity;
+	}
+
+	public Trade (TradeForm f)
+	{
+		this.tradeId=f.getTradeId();
+		this.account=f.getAccount();
+		this.type=f.getType();
+		this.buyQuantity=f.getBuyQuantity();
 	}
 
 	@Override

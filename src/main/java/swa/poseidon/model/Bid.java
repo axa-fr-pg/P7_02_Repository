@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.BidForm;
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -32,15 +31,12 @@ public class Bid implements EntityCore<BidForm>
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal bidQuantity;
 	
-	@Digits(integer=8, fraction=1)
 	@Column(columnDefinition = "DECIMAL(8,1)")
 	BigDecimal askQuantity;
 	
-	@Digits(integer=8, fraction=2)
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal bidAmount;
 	
-	@Digits(integer=8, fraction=2)
 	@Column(columnDefinition = "DECIMAL(8,2)")
 	BigDecimal askAmount;
 	

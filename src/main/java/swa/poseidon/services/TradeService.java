@@ -1,8 +1,8 @@
 package swa.poseidon.services;
 
-import swa.poseidon.form.RuleForm;
-import swa.poseidon.model.Rule;
+import swa.poseidon.form.TradeForm;
+import swa.poseidon.model.Trade;
 
-public interface TradeService extends EntityService<Rule,RuleForm>
+public interface TradeService extends EntityService<Trade,TradeForm>
 {
 }
