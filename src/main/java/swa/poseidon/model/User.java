@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swa.poseidon.form.UserForm;
+import swa.poseidon.form.UserFormWithPassword;
 
 @Entity
 @FieldDefaults(level=AccessLevel.PRIVATE)
@@ -46,6 +47,12 @@ public class User implements EntityCore<UserForm>
 		role=f.getRole();
     }
 
+    public User(UserFormWithPassword f)
+    {
+		this((UserForm) f);
+		password=f.getPassword();
+    }
+
 	@Override
 	public void setId(Integer id) {
 		userId = id;
@@ -59,7 +66,7 @@ public class User implements EntityCore<UserForm>
 	@Override
 	public EntityCore<UserForm> newValidTestEntityWithIdZero(int index) 
 	{
-		return (EntityCore<UserForm>) new User("username"+index, "password"+index, "fullname"+index, index*11);
+		return (EntityCore<UserForm>) new User("username"+index, "Password#"+index, "fullname"+index, index*11);
 	}
 
 	@Override

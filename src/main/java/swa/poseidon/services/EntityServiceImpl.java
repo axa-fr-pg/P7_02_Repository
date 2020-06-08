@@ -16,7 +16,7 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 	@Autowired JpaRepository<E, Integer> repository;
 	
 	@Override
-	public List<F> readAll()
+	public List<F> readAllForms()
 	{
 		List<E> eList = (List<E>) repository.findAll();
 		List<F> fList = new ArrayList<F>();
@@ -32,7 +32,7 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public E create(F f) 
+	public E createByForm(F f) 
 	{
 		FormCore<E> fCore = (FormCore<E>) f;
 		E e = fCore.toEntity();
@@ -49,7 +49,7 @@ public abstract class EntityServiceImpl<E,F> implements EntityService<E,F>
 	}
 
 	@Override
-	public E update(F f)  
+	public E updateByForm(F f)  
 	{
 		@SuppressWarnings("unchecked")
 		FormCore<E> fCore = (FormCore<E>) f;

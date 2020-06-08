@@ -24,14 +24,14 @@ public abstract class EntityController<E,F>
     @GetMapping("/list")
     public List<F> list()
     {
-        return entityService.readAll();
+        return entityService.readAllForms();
     }
 
     @PostMapping("/add")
     public ResponseEntity<F> add(@RequestBody @Valid F form) 
     {
     	@SuppressWarnings("unchecked")
-		EntityCore<F> entityCore = (EntityCore<F>) entityService.create(form);
+		EntityCore<F> entityCore = (EntityCore<F>) entityService.createByForm(form);
         return new ResponseEntity<F>(entityCore.toForm(), HttpStatus.CREATED);
     }
 
@@ -41,7 +41,7 @@ public abstract class EntityController<E,F>
     {
     	FormCore<E> formCore = (FormCore<E>) form;
     	if (id == 0 || formCore.id() == null || id != formCore.id().intValue()) throw new InvalidRequestException();
-    	EntityCore<F> entityCore = (EntityCore<F>) entityService.update(form);
+    	EntityCore<F> entityCore = (EntityCore<F>) entityService.updateByForm(form);
         return new ResponseEntity<F>(entityCore.toForm(), HttpStatus.OK);
     }
 

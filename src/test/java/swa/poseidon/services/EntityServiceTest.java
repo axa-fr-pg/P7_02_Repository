@@ -28,7 +28,7 @@ public abstract class EntityServiceTest<E,F>
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void givenEntityList_readAll_returnsCorrectFormList() 
+	public void givenEntityList_readAllForms_returnsCorrectFormList() 
 	{
 		// GIVEN
 		E e1 =  (E) entityCore.newValidTestEntityWithGivenId(1);
@@ -37,7 +37,7 @@ public abstract class EntityServiceTest<E,F>
 		List<E> entityList = (List<E>) Arrays.asList(e1, e2, e3);
 		when(entityRepository.findAll()).thenReturn(entityList);
 		// WHEN
-		List<F> formList = entityService.readAll();
+		List<F> formList = entityService.readAllForms();
 		// THEN
 		assertNotNull(formList);
 		assertEquals(3, formList.size());
@@ -51,14 +51,14 @@ public abstract class EntityServiceTest<E,F>
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void givenValidForm_create_generatesNewId()
+	public void givenValidForm_createByForm_generatesNewId()
 	{
 		// GIVEN
 		E expected =  (E) entityCore.newValidTestEntityWithGivenId(1);
 		F given =  (F) entityCore.newValidTestEntityWithIdZero(1).toForm();
 		when(entityRepository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
-		EntityCore<F> resultEntity = (EntityCore<F>) entityService.create(given);
+		EntityCore<F> resultEntity = (EntityCore<F>) entityService.createByForm(given);
 		// THEN
 		assertNotNull(resultEntity);
 		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
@@ -92,7 +92,7 @@ public abstract class EntityServiceTest<E,F>
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void givenForm_update_returnsSavedEntity()
+	public void givenForm_updateByForm_returnsSavedEntity()
 	{
 		// GIVEN
 		E expected =  (E) entityCore.newValidTestEntityWithGivenId(1);
@@ -100,13 +100,12 @@ public abstract class EntityServiceTest<E,F>
 		when(entityRepository.findById(1)).thenReturn((Optional<E>) Optional.of(expected));
 		when(entityRepository.save(any((Class<E>)entity.getClass()))).thenReturn(expected);
 		// WHEN
-		EntityCore<F> resultEntity = (EntityCore<F>) entityService.update(given);
+		EntityCore<F> resultEntity = (EntityCore<F>) entityService.updateByForm(given);
 		// THEN
 		assertNotNull(resultEntity);
 		FormCore<E> resultForm = (FormCore<E>) resultEntity.toForm();
 		assertEquals(1, resultForm.id());
-	}
-		
+	}		
 	
 	@Test
 	public void givenExistingEntity_delete_returnsTrue() 

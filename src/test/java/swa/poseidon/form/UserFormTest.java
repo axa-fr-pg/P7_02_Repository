@@ -42,11 +42,10 @@ public class UserFormTest
 	{
 		// GIVEN
 	    String username="username";
-	    String password="password";
 	    String fullname="fullname";
 		Integer role=12345;
 		// WHEN
-		UserForm form =  new UserForm(new User(username, password, fullname, role));
+		UserForm form =  new UserForm(new User(username, "no password in UserForm", fullname, role));
         Set<ConstraintViolation<UserForm>> violations = validator.validate(form);
         for (ConstraintViolation<UserForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
@@ -58,11 +57,10 @@ public class UserFormTest
 	{
 		// GIVEN
 	    String username="";
-	    String password="";
 	    String fullname="";
 		Integer role=-1;
 		// WHEN
-		UserForm form =  new UserForm(new User(username, password, fullname, role));
+		UserForm form =  new UserForm(new User(username, "no password in UserForm", fullname, role));
         Set<ConstraintViolation<UserForm>> violations = validator.validate(form);
         for (ConstraintViolation<UserForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
