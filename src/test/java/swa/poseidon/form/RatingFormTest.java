@@ -16,11 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import swa.poseidon.form.RatingForm;
 import swa.poseidon.model.Rating;
 
-public class RatingTest 
+public class RatingFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(RatingTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RatingFormTest.class);
 
 	private static ValidatorFactory factory;
  	private static Validator validator;
@@ -42,14 +43,14 @@ public class RatingTest
 	public void givenValidParameters_newInstance_returnsEmptyViolationSet()
 	{
 		// GIVEN
-		String moodysRating="moody";
-		String standPoorRating="standard & poor";
-		String fitchRating="fitch";
+		String moodysRatingForm="moody";
+		String standPoorRatingForm="standard & poor";
+		String fitchRatingForm="fitch";
 		Integer orderNumber=1;
 		// WHEN
-		Rating rating = new Rating(moodysRating, standPoorRating, fitchRating, orderNumber);
-        Set<ConstraintViolation<Rating>> violations = validator.validate(rating);
-        for (ConstraintViolation<Rating> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		RatingForm rating = new RatingForm(new Rating (moodysRatingForm, standPoorRatingForm, fitchRatingForm, orderNumber));
+        Set<ConstraintViolation<RatingForm>> violations = validator.validate(rating);
+        for (ConstraintViolation<RatingForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -58,14 +59,14 @@ public class RatingTest
 	public void givenInvalidParameters_newInstance_returnsViolationErrors()
 	{
 		// GIVEN
-		String moodysRating="";
-		String standPoorRating="";
-		String fitchRating="";
+		String moodysRatingForm="";
+		String standPoorRatingForm="";
+		String fitchRatingForm="";
 		Integer orderNumber=0;
 		// WHEN
-		Rating rating = new Rating(moodysRating, standPoorRating, fitchRating, orderNumber);
-        Set<ConstraintViolation<Rating>> violations = validator.validate(rating);
-        for (ConstraintViolation<Rating> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		RatingForm rating = new RatingForm(new Rating(moodysRatingForm, standPoorRatingForm, fitchRatingForm, orderNumber));
+        Set<ConstraintViolation<RatingForm>> violations = validator.validate(rating);
+        for (ConstraintViolation<RatingForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(4, violations.size());
 	}

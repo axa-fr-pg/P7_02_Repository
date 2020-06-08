@@ -40,6 +40,7 @@ public abstract class EntityControllerIT<E,F>
 	protected E entity;
 	protected EntityCore<F> entityCore;
 	protected String entityRootRequestMapping;
+	protected int numberOfEntityFieldsToValidate;
 	
 	@SuppressWarnings("unchecked")
 	private E saveNewTestEntityToRepository(int index)
@@ -114,7 +115,7 @@ public abstract class EntityControllerIT<E,F>
 			.andReturn().getResponse().getContentAsString();
 		ArrayList<String> responseObject = objectMapper.readValue(responseString, ArrayList.class);
 		assertNotNull(responseObject); 
-		assertEquals(3, responseObject.size());
+		assertEquals(numberOfEntityFieldsToValidate, responseObject.size());
 	}
 	
 	@Test

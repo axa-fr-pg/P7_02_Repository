@@ -5,25 +5,26 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import swa.poseidon.form.CurvePointForm;
-import swa.poseidon.model.CurvePoint;
-import swa.poseidon.repositories.CurvePointRepository;
+
+import swa.poseidon.form.RatingForm;
+import swa.poseidon.model.Rating;
+import swa.poseidon.repositories.RatingRepository;
 
 @SpringBootTest
-public class CurvePointTest extends EntityServiceTest<CurvePoint,CurvePointForm>
+public class RatingServiceTest extends EntityServiceTest<Rating,RatingForm>
 {
 	@MockBean
-	private CurvePointRepository autowiredRepository;
+	private RatingRepository autowiredRepository;
 	
 	@Autowired
-	private CurvePointService autowiredService;
+	private RatingService autowiredService;
 	
 	@PostConstruct
 	public void injectEntityProperties()
 	{
 		super.entityRepository = autowiredRepository;
 		super.entityService = autowiredService;
-		super.entity = new CurvePoint();
+		super.entity = new Rating();
 		super.entityCore = entity;
 	}
 }

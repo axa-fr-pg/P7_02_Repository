@@ -26,13 +26,14 @@ public class CurvePointControllerIT extends EntityControllerIT<CurvePoint,CurveP
 	private MockMvc autowiredMvc;
 	
 	@PostConstruct
-	public void injectEntityProperties()
+	public void injectEntityPropertiesIntoSuper()
 	{
-		super.entityRepository = autowiredRepository;
-		super.entityService = autowiredService;
-		super.entity = new CurvePoint();
-		super.entityCore = entity;
-		super.mvc = autowiredMvc;
+		entityRepository = autowiredRepository;
+		entityService = autowiredService;
+		entity = new CurvePoint();
+		entityCore = entity;
+		mvc = autowiredMvc;
 		entityRootRequestMapping = "/curvePoints";
+		numberOfEntityFieldsToValidate = 3;
 	}
 }

@@ -17,11 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import swa.poseidon.form.CurvePointForm;
 import swa.poseidon.model.CurvePoint;
 
-public class CurvePointTest 
+public class CurvePointFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(CurvePointTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CurvePointFormTest.class);
 
 	private static ValidatorFactory factory;
  	private static Validator validator;
@@ -47,9 +48,9 @@ public class CurvePointTest
 		BigDecimal term = new BigDecimal(1234567.0);
 		BigDecimal value = new BigDecimal(87654321.0);
 		// WHEN
-		CurvePoint curvePoint = new CurvePoint(curveId, term, value);
-        Set<ConstraintViolation<CurvePoint>> violations = validator.validate(curvePoint);
-        for (ConstraintViolation<CurvePoint> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		CurvePointForm curvePoint = new CurvePointForm(new CurvePoint(curveId, term, value));
+        Set<ConstraintViolation<CurvePointForm>> violations = validator.validate(curvePoint);
+        for (ConstraintViolation<CurvePointForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -62,9 +63,9 @@ public class CurvePointTest
 		BigDecimal term = new BigDecimal(123456789L);
 		BigDecimal value = new BigDecimal(123456789L);
 		// WHEN
-		CurvePoint curvePoint = new CurvePoint(curveId, term, value);
-        Set<ConstraintViolation<CurvePoint>> violations = validator.validate(curvePoint);
-        for (ConstraintViolation<CurvePoint> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+		CurvePointForm curvePoint = new CurvePointForm(new CurvePoint(curveId, term, value));
+        Set<ConstraintViolation<CurvePointForm>> violations = validator.validate(curvePoint);
+        for (ConstraintViolation<CurvePointForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(3, violations.size());
 	}

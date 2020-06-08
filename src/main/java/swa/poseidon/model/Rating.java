@@ -21,20 +21,20 @@ public class Rating implements EntityCore<RatingForm>
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Integer ratingId;
 
-	@NotBlank
+	@NotBlank(message="moodysRating is mandatory")
 	@Column(length = 125)
 	String moodysRating;
 
-	@NotBlank
+	@NotBlank(message="standPoorRating is mandatory")
 	@Column(length = 125)
 	String standPoorRating;
 
-	@NotBlank
+	@NotBlank(message="fitchRating is mandatory")
 	@Column(length = 125)
 	String fitchRating;
 
-	@NotNull
-	@Positive
+	@NotNull(message="orderNumber is mandatory")
+	@Positive(message="orderNumber must be positive")
 	Integer orderNumber;
 	
 	public Rating(String moodysRating, String standPoorRating, String fitchRating, Integer orderNumber)
