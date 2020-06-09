@@ -26,17 +26,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import swa.poseidon.controllers.ExceptionManager;
 import swa.poseidon.form.FormCore;
 import swa.poseidon.model.EntityCore;
-import swa.poseidon.services.EntityService;
 
 public abstract class EntityControllerIT<E,F>
 {
 	protected MockMvc mvc;
 	
 	@Autowired
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private ObjectMapper objectMapper;
 
 	protected JpaRepository<E,Integer> entityRepository;
-	protected EntityService<E,F> entityService;
 	protected E entity;
 	protected EntityCore<F> entityCore;
 	protected String entityRootRequestMapping;

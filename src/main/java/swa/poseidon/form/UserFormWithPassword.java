@@ -15,6 +15,7 @@ import swa.poseidon.model.User;
 @NoArgsConstructor
 public class UserFormWithPassword extends UserForm
 {
+	@NotBlank(message = "password is mandatory")
     @Pattern(regexp=".*[A-Z].*", message="password must contain at least one upper case character")
     @Size(min=8, message="password minimal length is 8 characters")
     @Pattern(regexp=".*[0-9].*", message="password must contain at least one digit")

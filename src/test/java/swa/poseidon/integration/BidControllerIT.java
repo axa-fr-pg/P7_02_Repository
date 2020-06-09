@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import swa.poseidon.form.BidForm;
 import swa.poseidon.model.Bid;
 import swa.poseidon.repositories.BidRepository;
-import swa.poseidon.services.BidService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -19,16 +18,12 @@ public class BidControllerIT extends EntityControllerIT<Bid,BidForm>
 	private BidRepository autowiredRepository;
 	
 	@Autowired
-	private BidService autowiredService;
-
-	@Autowired
 	private MockMvc autowiredMvc;
 	
 	@PostConstruct
 	public void injectEntityPropertiesIntoSuper()
 	{
 		entityRepository = autowiredRepository;
-		entityService = autowiredService;
 		entity = new Bid();
 		entityCore = entity;
 		mvc = autowiredMvc;

@@ -63,6 +63,10 @@ public class User implements EntityCore<UserForm>
 		return new UserForm(this);
 	}
 
+	public UserFormWithPassword toFormWithPassword() {
+		return new UserFormWithPassword(this);
+	}
+
 	@Override
 	public EntityCore<UserForm> newValidTestEntityWithIdZero(int index) 
 	{

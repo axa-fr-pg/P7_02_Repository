@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import swa.poseidon.form.CurvePointForm;
 import swa.poseidon.model.CurvePoint;
 import swa.poseidon.repositories.CurvePointRepository;
-import swa.poseidon.services.CurvePointService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,16 +19,12 @@ public class CurvePointControllerIT extends EntityControllerIT<CurvePoint,CurveP
 	private CurvePointRepository autowiredRepository;
 	
 	@Autowired
-	private CurvePointService autowiredService;
-
-	@Autowired
 	private MockMvc autowiredMvc;
 	
 	@PostConstruct
 	public void injectEntityPropertiesIntoSuper()
 	{
 		entityRepository = autowiredRepository;
-		entityService = autowiredService;
 		entity = new CurvePoint();
 		entityCore = entity;
 		mvc = autowiredMvc;

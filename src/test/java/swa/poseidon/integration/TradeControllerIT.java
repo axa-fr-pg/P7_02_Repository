@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import swa.poseidon.form.TradeForm;
 import swa.poseidon.model.Trade;
 import swa.poseidon.repositories.TradeRepository;
-import swa.poseidon.services.TradeService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -19,16 +18,12 @@ public class TradeControllerIT extends EntityControllerIT<Trade,TradeForm>
 	private TradeRepository autowiredRepository;
 	
 	@Autowired
-	private TradeService autowiredService;
-
-	@Autowired
 	private MockMvc autowiredMvc;
 	
 	@PostConstruct
 	public void injectEntityPropertiesIntoSuper()
 	{
 		entityRepository = autowiredRepository;
-		entityService = autowiredService;
 		entity = new Trade();
 		entityCore = entity;
 		mvc = autowiredMvc;

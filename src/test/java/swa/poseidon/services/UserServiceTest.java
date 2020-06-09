@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import swa.poseidon.form.FormCore;
 import swa.poseidon.form.UserForm;
 import swa.poseidon.form.UserFormWithPassword;
-import swa.poseidon.model.EntityCore;
 import swa.poseidon.model.User;
 import swa.poseidon.repositories.UserRepository;
 

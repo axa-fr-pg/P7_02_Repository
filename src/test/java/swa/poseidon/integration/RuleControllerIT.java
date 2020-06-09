@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import swa.poseidon.form.RuleForm;
 import swa.poseidon.model.Rule;
 import swa.poseidon.repositories.RuleRepository;
-import swa.poseidon.services.RuleService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,16 +19,12 @@ public class RuleControllerIT extends EntityControllerIT<Rule, RuleForm>
 	private RuleRepository autowiredRepository;
 	
 	@Autowired
-	private RuleService autowiredService;
-
-	@Autowired
 	private MockMvc autowiredMvc;
 	
 	@PostConstruct
 	public void injectEntityPropertiesIntoSuper()
 	{
 		entityRepository = autowiredRepository;
-		entityService = autowiredService;
 		entity = new Rule();
 		entityCore = entity;
 		mvc = autowiredMvc;
