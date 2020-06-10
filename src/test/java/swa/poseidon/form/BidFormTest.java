@@ -13,16 +13,13 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import swa.poseidon.form.BidForm;
+import swa.poseidon.log.LogService;
 import swa.poseidon.model.Bid;
 
 public class BidFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(BidFormTest.class);
-
 	private static ValidatorFactory factory;
  	private static Validator validator;
 
@@ -49,7 +46,7 @@ public class BidFormTest
 		// WHEN
 		BidForm form =  new BidForm(new Bid(account, type, bidQuantity));
         Set<ConstraintViolation<BidForm>> violations = validator.validate(form);
-        for (ConstraintViolation<BidForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<BidForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -64,7 +61,7 @@ public class BidFormTest
 		// WHEN
 		BidForm form =  new BidForm(new Bid(account, type, bidQuantity));
         Set<ConstraintViolation<BidForm>> violations = validator.validate(form);
-        for (ConstraintViolation<BidForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<BidForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(3, violations.size());
 	}

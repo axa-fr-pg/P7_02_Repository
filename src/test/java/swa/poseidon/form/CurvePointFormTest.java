@@ -14,16 +14,13 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import swa.poseidon.form.CurvePointForm;
+import swa.poseidon.log.LogService;
 import swa.poseidon.model.CurvePoint;
 
 public class CurvePointFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(CurvePointFormTest.class);
-
 	private static ValidatorFactory factory;
  	private static Validator validator;
 
@@ -50,7 +47,7 @@ public class CurvePointFormTest
 		// WHEN
 		CurvePointForm curvePoint = new CurvePointForm(new CurvePoint(curveId, term, value));
         Set<ConstraintViolation<CurvePointForm>> violations = validator.validate(curvePoint);
-        for (ConstraintViolation<CurvePointForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<CurvePointForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -65,7 +62,7 @@ public class CurvePointFormTest
 		// WHEN
 		CurvePointForm curvePoint = new CurvePointForm(new CurvePoint(curveId, term, value));
         Set<ConstraintViolation<CurvePointForm>> violations = validator.validate(curvePoint);
-        for (ConstraintViolation<CurvePointForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<CurvePointForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(3, violations.size());
 	}

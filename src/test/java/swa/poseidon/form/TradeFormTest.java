@@ -13,15 +13,13 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import swa.poseidon.form.TradeForm;
+import swa.poseidon.log.LogService;
 import swa.poseidon.model.Trade;
 
 public class TradeFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(TradeFormTest.class);
 
 	private static ValidatorFactory factory;
  	private static Validator validator;
@@ -49,7 +47,7 @@ public class TradeFormTest
 		// WHEN
 		TradeForm form =  new TradeForm(new Trade(account, type, buyQuantity));
         Set<ConstraintViolation<TradeForm>> violations = validator.validate(form);
-        for (ConstraintViolation<TradeForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<TradeForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -64,7 +62,7 @@ public class TradeFormTest
 		// WHEN
 		TradeForm form =  new TradeForm(new Trade(account, type, buyQuantity));
         Set<ConstraintViolation<TradeForm>> violations = validator.validate(form);
-        for (ConstraintViolation<TradeForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<TradeForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(3, violations.size());
 	}

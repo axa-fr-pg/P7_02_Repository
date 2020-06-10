@@ -11,16 +11,13 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import swa.poseidon.form.UserForm;
+import swa.poseidon.log.LogService;
 import swa.poseidon.model.User;
 
 public class UserFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(UserFormTest.class);
-
 	private static ValidatorFactory factory;
  	private static Validator validator;
 
@@ -47,7 +44,7 @@ public class UserFormTest
 		// WHEN
 		UserForm form =  new UserForm(new User(username, "no password in UserForm", fullname, role));
         Set<ConstraintViolation<UserForm>> violations = validator.validate(form);
-        for (ConstraintViolation<UserForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<UserForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -62,7 +59,7 @@ public class UserFormTest
 		// WHEN
 		UserForm form =  new UserForm(new User(username, "no password in UserForm", fullname, role));
         Set<ConstraintViolation<UserForm>> violations = validator.validate(form);
-        for (ConstraintViolation<UserForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<UserForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(3, violations.size()); // 3 and not 4 because password is in User but not in UserForm
 	}

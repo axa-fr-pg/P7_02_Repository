@@ -13,16 +13,13 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import swa.poseidon.form.RuleForm;
+import swa.poseidon.log.LogService;
 import swa.poseidon.model.Rule;
 
 public class RuleFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(RuleFormTest.class);
-
 	private static ValidatorFactory factory;
  	private static Validator validator;
 
@@ -52,7 +49,7 @@ public class RuleFormTest
 		// WHEN
 		RuleForm rating = new RuleForm(new RuleForm (new Rule(name, description, json, template, sqlStr, sqlPart)));
         Set<ConstraintViolation<RuleForm>> violations = validator.validate(rating);
-        for (ConstraintViolation<RuleForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<RuleForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -70,7 +67,7 @@ public class RuleFormTest
 		// WHEN
 		RuleForm rating = new RuleForm(new RuleForm(new Rule(name, description, json, template, sqlStr, sqlPart)));
         Set<ConstraintViolation<RuleForm>> violations = validator.validate(rating);
-        for (ConstraintViolation<RuleForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<RuleForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(6, violations.size());
 	}

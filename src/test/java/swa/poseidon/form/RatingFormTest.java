@@ -13,16 +13,12 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import swa.poseidon.form.RatingForm;
+import swa.poseidon.log.LogService;
 import swa.poseidon.model.Rating;
 
 public class RatingFormTest 
 {
-    private static final Logger logger = LoggerFactory.getLogger(RatingFormTest.class);
-
 	private static ValidatorFactory factory;
  	private static Validator validator;
 
@@ -50,7 +46,7 @@ public class RatingFormTest
 		// WHEN
 		RatingForm rating = new RatingForm(new Rating (moodysRatingForm, standPoorRatingForm, fitchRatingForm, orderNumber));
         Set<ConstraintViolation<RatingForm>> violations = validator.validate(rating);
-        for (ConstraintViolation<RatingForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<RatingForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertTrue(violations.isEmpty());
 	}
@@ -66,7 +62,7 @@ public class RatingFormTest
 		// WHEN
 		RatingForm rating = new RatingForm(new Rating(moodysRatingForm, standPoorRatingForm, fitchRatingForm, orderNumber));
         Set<ConstraintViolation<RatingForm>> violations = validator.validate(rating);
-        for (ConstraintViolation<RatingForm> cv : violations) logger.info(cv.getPropertyPath() + " " + cv.getMessage());
+        for (ConstraintViolation<RatingForm> cv : violations) LogService.logger.debug(cv.getPropertyPath() + " " + cv.getMessage());
 		// THEN
         assertEquals(4, violations.size());
 	}
