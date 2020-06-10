@@ -3,6 +3,8 @@ package swa.poseidon.log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ public class CacheRequestService extends SecurityContextHolderAwareRequestWrappe
 {
     private byte[] cache;
     private String charSet;
+    Map<String, String[]> parameterMap; 
 
     public CacheRequestService(HttpServletRequest request) throws IOException 
     {
@@ -21,6 +24,8 @@ public class CacheRequestService extends SecurityContextHolderAwareRequestWrappe
         InputStream requestInputStream = request.getInputStream();
         cache = StreamUtils.copyToByteArray(requestInputStream);
 		charSet = request.getCharacterEncoding();
+		parameterMap = new HashMap<String, String[]>();
+		parameterMap.putAll(request.getParameterMap());
     }
 
     @Override
@@ -38,6 +43,12 @@ public class CacheRequestService extends SecurityContextHolderAwareRequestWrappe
 			LogService.logger.error( "toString() throws UnsupportedEncodingException" );
 			return "";
 		}
+    }
+    
+    @Override
+    public Map<String, String[]> getParameterMap()
+    {
+    		return parameterMap;
     }
 /*
     @Override

@@ -1,7 +1,8 @@
 package swa.poseidon.log;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,86 +30,69 @@ public class LogService extends HandlerInterceptorAdapter
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) 
     {	
-    	LogService.logger.info( "preHandle()");
-    	String flatBody="{}";
-    	try {
-			InputStream requestInputStream = request.getInputStream();
-			byte[] copyOfBody = StreamUtils.copyToByteArray(requestInputStream);
-			String charSet = request.getCharacterEncoding();
-			flatBody = new String(copyOfBody, charSet);
-		} 
-    	catch (IOException e) {
-			LogService.logger.error( "afterCompletion() throws IOException", e);
+    	LogService.logger.info( "LogService.preHandle()");
+        String indentedBody = null;
+        StringBuilder parameters = null;
+    	if (request.getContentType().equals("application/json"))
+    	{
+	    	// GET BODY
+	    	String flatBody="{}";
+	    	try {
+				InputStream requestInputStream = request.getInputStream();
+				byte[] copyOfBody = StreamUtils.copyToByteArray(requestInputStream);
+				String charSet = request.getCharacterEncoding();
+				flatBody = new String(copyOfBody, charSet);
+			} 
+	    	catch (Exception e) {
+				LogService.logger.error( "afterCompletion() throws Exception", e);
+			}
+			try {
+				JsonNode nodeBody = objectMapper.readTree(flatBody);
+		        indentedBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(nodeBody);
+			} 
+			catch (JsonProcessingException e) {
+		    	LogService.logger.error( "preHandle() throws JsonProcessingException", e);
+			}
+    	}
+		else
+		{
+	    	// GET PARAMETERS
+	    	Map<String, String[]> parameterList = request.getParameterMap();
+	        parameters = new StringBuilder("{");
+	        for (String key : parameterList.keySet()) {
+	        	parameters.append(key + "=" + parameterList.get(key) + ", ");
+	        }
+	        if (parameters.length()>2) parameters.delete(parameters.length()-2, parameters.length());
+	        parameters.append("}");
 		}
-        String indentedBody = "Cannot display body due to JsonProcessingException";
-		try {
-			JsonNode nodeBody = objectMapper.readTree(flatBody);
-	        indentedBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(nodeBody);
-		} 
-		catch (JsonProcessingException e) {
-	    	LogService.logger.error( "preHandle() throws JsonProcessingException", e);
-		}
-    	LogService.logger.info( "Request method:" + request.getMethod() + " URL:"
-					+ request.getRequestURL() + " query:" + request.getQueryString()
-					+ " body:\n" + indentedBody);
+		// WRITE LOG
+    	LogService.logger.info( "\nREQUEST received\nMETHOD:" + request.getMethod() 
+    				+ "\nURL:" + request.getRequestURL() 
+    				+ "\nQUERY:" + request.getQueryString()
+					+ "\nPARAMETERS:" + parameters
+					+ "\nJSON:" + indentedBody);
 		return true;
     }
 
     @Override
     public void postHandle( HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)  
     {
-    	// ContentCachingResponseWrapper
-    	LogService.logger.info( "postHandle()");
+    	LogService.logger.info( "LogService.postHandle()");
      	CacheResponseService cacheResponseService = WebUtils.getNativeResponse(response, CacheResponseService.class);;
-    	String flatBody=cacheResponseService.toString();
-    	    	
-    	
-        String indentedBody = "Cannot display body due to JsonProcessingException";
-		try {
-			JsonNode nodeBody = objectMapper.readTree(flatBody);
-	        indentedBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(nodeBody);
-		} 
-		catch (JsonProcessingException e) {
-	    	LogService.logger.error( "afterCompletion() throws JsonProcessingException" );
-		}
-		LogService.logger.info( "Response method:" + request.getMethod() + " URL:"
-				+ request.getRequestURL() + " status:" + response.getStatus()
-				+ " body:\n" + indentedBody );
-    }
-    
-    /*
-    @Override
-    public void afterCompletion( HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)  
-    {
-    	LogService.logger.info( "afterCompletion()");
     	String flatBody="{}";
-    	    	
-    	*****
-    	try {
-    		ByteArrayOutputStream responseOutputStream = response.getOutputStream().; 
-			byte[] copyOfBody = StreamUtils.copyToByteArray(responseOutputStream);
-			String charSet = request.getCharacterEncoding();
-			flatBody = new String(copyOfBody, charSet);
-		} 
-    	catch (IOException e) {
-			LogService.logger.error( "afterCompletion() throws IOException", e);
-		}
-		*****
-    	
-    	CacheResponseService cacheResponseService = (CacheResponseService) response;
-    	String indentedBody = cacheResponseService.toString();
-    	
-   //     String indentedBody = "Cannot display body due to JsonProcessingException";
+    	if (cacheResponseService != null) flatBody=cacheResponseService.toString();  	    	    	
+        String indentedBody = null;
 		try {
 			JsonNode nodeBody = objectMapper.readTree(flatBody);
 	        indentedBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(nodeBody);
 		} 
 		catch (JsonProcessingException e) {
-	    	LogService.logger.error( "afterCompletion() throws JsonProcessingException" );
+	    	LogService.logger.error( "postHandle() throws JsonProcessingException" );
 		}
-		LogService.logger.info( "Response method:" + request.getMethod() + " URL:"
-				+ request.getRequestURL() + " status:" + response.getStatus()
-				+ " body:\n" + indentedBody );
-    }*/
+		LogService.logger.info( "\nRESPONSE sent\nMETHOD:" + request.getMethod() 
+				+ "\nURL:" + request.getRequestURL() 
+				+ "\nSTATUS:" + response.getStatus()
+				+ "\nJSON:" + indentedBody );
+    }
 }
 

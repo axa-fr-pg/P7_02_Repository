@@ -14,6 +14,6 @@ public class LogConfiguration implements WebMvcConfigurer
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 		LogService.logger.debug( "addInterceptors()" );
-        registry.addInterceptor(logService);
+ //       registry.addInterceptor(logService);
     }
 }

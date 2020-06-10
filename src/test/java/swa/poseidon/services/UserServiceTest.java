@@ -38,7 +38,7 @@ public class UserServiceTest extends EntityServiceTest<User,UserForm>
 	}
 	
 	@Test
-	public void givenValidForm_createByFormWithPassword_generatesNewId()
+	public void givenValidForm_createByFormWithPassword_generatesNewId() throws Exception
 	{
 		// GIVEN
 		User expected =  (User) entityCore.newValidTestEntityWithIdZero(1);

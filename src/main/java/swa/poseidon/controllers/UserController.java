@@ -1,6 +1,7 @@
 package swa.poseidon.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,16 +37,29 @@ public class UserController
 
     @PostMapping("/add")
     public ResponseEntity<UserForm> add(@RequestBody @Valid UserFormWithPassword form) 
+    		throws DuplicateUsernameException 
     {
-		User newUser = entityService.createByForm(form);
+		User newUser = null;
+		try {
+			newUser = entityService.createByFormWithPassword(form);
+		} catch (DataIntegrityViolationException e)
+		{
+			throw new DuplicateUsernameException();
+		}
         return new ResponseEntity<UserForm>(newUser.toForm(), HttpStatus.CREATED);
     }
 
 	@PutMapping("/update/{id}")
-    public ResponseEntity<UserForm> update(@PathVariable Integer id, @RequestBody @Valid UserFormWithPassword form) throws InvalidRequestException 
+    public ResponseEntity<UserForm> update(@PathVariable Integer id, @RequestBody @Valid UserFormWithPassword form) 
+    		throws InvalidRequestException, DuplicateUsernameException 
     {
-    	if (id == 0 || form.id() == null || id != form.id().intValue()) throw new InvalidRequestException();
-    	User updatedUser =  entityService.updateByForm(form);
+		User updatedUser = null;
+		try {
+			updatedUser = entityService.updateByFormWithPassword(form);
+		} catch (DataIntegrityViolationException e)
+		{
+			throw new DuplicateUsernameException();
+		}
         return new ResponseEntity<UserForm>(updatedUser.toForm(), HttpStatus.OK);
     }
 

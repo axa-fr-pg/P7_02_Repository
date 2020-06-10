@@ -18,6 +18,7 @@ public class ExceptionManager extends ResponseEntityExceptionHandler
 {
 	public static final String MESSAGE_NOT_SUCH_ELEMENT = "The expected entity was not found in the database";
 	public static final String MESSAGE_INVALID_REQUEST = "The request was not consistent";
+	public static final String MESSAGE_DUPLICATE_ENTITY = "The expected entity already exists in the database";
 	
 	@Override
 	public final ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -39,7 +40,11 @@ public class ExceptionManager extends ResponseEntityExceptionHandler
 	
 	@ExceptionHandler(InvalidRequestException.class)
 	public final ResponseEntity<String> handleInvalidRequest() {
-		return new ResponseEntity<>(MESSAGE_INVALID_REQUEST, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(MESSAGE_INVALID_REQUEST, HttpStatus.BAD_REQUEST);
 	}
-
+	
+	@ExceptionHandler(DuplicateUsernameException.class)
+	public final ResponseEntity<String> handleDuplicateUsername() {
+		return new ResponseEntity<>(MESSAGE_DUPLICATE_ENTITY, HttpStatus.BAD_REQUEST);
+	}	
 }

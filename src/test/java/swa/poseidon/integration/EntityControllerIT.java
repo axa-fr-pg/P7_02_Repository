@@ -8,6 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,20 +19,42 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import swa.poseidon.controllers.ExceptionManager;
 import swa.poseidon.form.FormCore;
+import swa.poseidon.form.UserFormWithPassword;
 import swa.poseidon.model.EntityCore;
+import swa.poseidon.model.User;
+import swa.poseidon.repositories.UserRepository;
+import swa.poseidon.services.UserService;
 
 public abstract class EntityControllerIT<E,F>
 {
 	protected MockMvc mvc;
+	
+	@Autowired
+	private WebApplicationContext context;
+
+    @Autowired
+    private FilterChainProxy springSecurityFilterChain;
+
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -47,9 +72,24 @@ public abstract class EntityControllerIT<E,F>
 	}
 
 	@BeforeEach
-	public void cleanEntityInDatabase()
+	public void authenticate() throws Exception
 	{
+		// ENTITY CLEANUP
 		entityRepository.deleteAll();
+		// USER TABLE PREPARATION
+		userRepository.deleteAll();
+		User user = (User) (new User()).newValidTestEntityWithIdZero(1);
+		UserFormWithPassword form = user.toFormWithPassword();		
+		userService.createByFormWithPassword(form);
+		// LOGIN
+		mvc = MockMvcBuilders.webAppContextSetup(context).addFilters(springSecurityFilterChain).build();
+		SecurityContext securityContext = (SecurityContext) mvc
+				.perform(formLogin("/processPoseidonLogin").user(user.getUsername()).password(user.getPassword()))
+				.andExpect(authenticated())
+				.andReturn().getRequest().getSession()
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		// STORE LOGIN STATUS IN CONTEXT
+		SecurityContextHolder.setContext(securityContext);
 	}
 
 	@Test
@@ -57,9 +97,9 @@ public abstract class EntityControllerIT<E,F>
 	public void givenEntityList_readAll_returnsCorrectList() throws Exception 
 	{
 		// GIVEN
-		E e1 =  saveNewTestEntityToRepository(1);
-		E e2 =  saveNewTestEntityToRepository(2);
-		E e3 =  saveNewTestEntityToRepository(3);
+		E e1 =  saveNewTestEntityToRepository(2);
+		E e2 =  saveNewTestEntityToRepository(3);
+		E e3 =  saveNewTestEntityToRepository(4);
 		// WHEN
 		String responseString = mvc.perform(get(entityRootRequestMapping+"/list")).andDo(print()).andReturn().getResponse().getContentAsString();
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, entityCore.toForm().getClass());
@@ -80,9 +120,9 @@ public abstract class EntityControllerIT<E,F>
 	public void givenValidForm_post_returnsCreatedEntity() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(1);
+		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(2);
 		F givenForm = givenEntity.toForm();
-		EntityCore<F> expectedEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(1);
+		EntityCore<F> expectedEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(2);
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(entityRootRequestMapping+"/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
@@ -121,7 +161,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenCorrectForm_put_returnsUpdatedEntity() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(1);
+		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(2);
 		FormCore<E> givenForm = (FormCore<E>) givenEntity.toForm();
 		Integer id = givenForm.id();
 		String json = objectMapper.writeValueAsString((F) givenForm);
@@ -141,7 +181,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithGivenId(1);
+		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithGivenId(2);
 		F givenForm = givenEntity.toForm();
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put(entityRootRequestMapping+"/update/" + 1)
@@ -157,7 +197,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenValidId_read_returnsCorrectForm() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(1);
+		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(2);
 		FormCore<E> givenForm = (FormCore<E>) givenEntity.toForm();
 		Integer id = givenForm.id();
 		// WHEN & THEN
@@ -187,7 +227,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenValidId_delete_removesEntity() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(1);
+		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(2);
 		FormCore<E> givenForm = (FormCore<E>) givenEntity.toForm();
 		Integer id = givenForm.id();
 		// WHEN

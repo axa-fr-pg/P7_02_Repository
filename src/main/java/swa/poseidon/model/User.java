@@ -12,13 +12,14 @@ import swa.poseidon.form.UserFormWithPassword;
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
 @NoArgsConstructor
+@Table(indexes = { @Index(name = "I_username", columnList = "username", unique=true) })
 public class User implements EntityCore<UserForm>
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     Integer userId;
     
-	@Column(length = 30)
+ 	@Column(length = 30)
     String username;
     
 	@Column(length = 125)
@@ -51,6 +52,11 @@ public class User implements EntityCore<UserForm>
     {
 		this((UserForm) f);
 		password=f.getPassword();
+    }
+    
+    public void setPassword(String pass)
+    {
+    	password=pass;
     }
 
 	@Override

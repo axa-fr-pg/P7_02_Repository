@@ -13,16 +13,16 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Order(value = Ordered.HIGHEST_PRECEDENCE)
-@Service
-@WebFilter(filterName = "CacheConfigurationService", urlPatterns = {"/bids/*", "/curvePoints/*"})
+//@Order(value = Ordered.HIGHEST_PRECEDENCE)
+//@Service
+//@WebFilter(filterName = "CacheConfigurationService", urlPatterns = {"/bids/*","/users/*"})  //TODO compléter
 public class CacheConfigurationService extends OncePerRequestFilter 
 {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, 
     		HttpServletResponse httpServletResponse, FilterChain filterChain) 
     				throws ServletException, IOException {
-		LogService.logger.info( "doFilterInternal()" );
+		LogService.logger.info( "CacheConfigurationService.doFilterInternal()" );
         CacheRequestService cacheRequest = new CacheRequestService(httpServletRequest);
         CacheResponseService cacheResponse = new CacheResponseService(httpServletResponse);
         filterChain.doFilter(cacheRequest, cacheResponse);
