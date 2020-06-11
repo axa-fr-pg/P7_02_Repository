@@ -65,9 +65,9 @@ public class UserControllerIT
 	private User entityCore = new User();
 	private static final String entityRootRequestMapping = "/users";
 	
-	private User saveNewTestEntityToRepository(int index)
+	private User insertNewTestEntityIntoDatabase(int index)
 	{
-		return repository.save((User)entityCore.newValidTestEntityWithGivenId(index));
+		return repository.save((User)entityCore.newValidTestEntityWithIdZero(index));
 	}
 
 	private void prepareDatabase()
@@ -102,9 +102,9 @@ public class UserControllerIT
 	public void givenEntityList_readAll_returnsCorrectList() throws Exception 
 	{
 		// GIVEN
-		User e1 =  saveNewTestEntityToRepository(2);
-		User e2 =  saveNewTestEntityToRepository(3);
-		User e3 =  saveNewTestEntityToRepository(4);
+		User e1 =  insertNewTestEntityIntoDatabase(2);
+		User e2 =  insertNewTestEntityIntoDatabase(3);
+		User e3 =  insertNewTestEntityIntoDatabase(4);
 		// WHEN
 		String responseString = mvc.perform(get(entityRootRequestMapping+"/list")).andDo(print()).andReturn().getResponse().getContentAsString();
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, UserForm.class);
@@ -176,7 +176,7 @@ public class UserControllerIT
 	public void givenCorrectForm_put_returnsUpdatedEntity() throws Exception 
 	{
 		// GIVEN
-		User givenUser =  saveNewTestEntityToRepository(2);
+		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		UserFormWithPassword givenForm = givenUser.toFormWithPassword();
 		Integer id = givenForm.id();
 		String json = objectMapper.writeValueAsString(givenForm);
@@ -212,7 +212,7 @@ public class UserControllerIT
 	public void givenValidId_read_returnsCorrectForm() throws Exception 
 	{
 		// GIVEN
-		User givenUser =  saveNewTestEntityToRepository(2);
+		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		Integer id = givenUser.getUserId();
 		// WHEN & THEN
 		String responseString = mvc.perform(get(entityRootRequestMapping+"/read/"+id)).andDo(print())
@@ -240,7 +240,7 @@ public class UserControllerIT
 	public void givenValidId_delete_removesEntity() throws Exception 
 	{
 		// GIVEN
-		User givenUser =  saveNewTestEntityToRepository(2);
+		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		Integer id = givenUser.getUserId();
 		// WHEN
 		String responseString = mvc.perform(delete(entityRootRequestMapping+"/delete/"+id))
@@ -267,7 +267,7 @@ public class UserControllerIT
 	{
 		// GIVEN
 		mvc.perform(logout()).andExpect(unauthenticated());
-		User givenUser =  saveNewTestEntityToRepository(2);
+		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		Integer id = givenUser.getUserId();
 		// WHEN
 		mvc.perform(delete(entityRootRequestMapping+"/delete/"+id)).andDo(print())

@@ -33,18 +33,28 @@ public class LogService extends HandlerInterceptorAdapter
     	LogService.logger.info( "LogService.preHandle()");
         String indentedBody = null;
         StringBuilder parameters = null;
-    	if (request.getContentType().equals("application/json"))
-    	{
+    	if (request.getContentType() == null)
+		{
+	    	// GET URLENCODED FORM
+	    	Map<String, String[]> parameterList = request.getParameterMap();
+	        parameters = new StringBuilder("{");
+	        for (String key : parameterList.keySet()) {
+	        	parameters.append(key + "=" + parameterList.get(key) + ", ");
+	        }
+	        if (parameters.length()>2) parameters.delete(parameters.length()-2, parameters.length());
+	        parameters.append("}");
+		}
+		else
+		{
 	    	// GET BODY
 	    	String flatBody="{}";
 	    	try {
 				InputStream requestInputStream = request.getInputStream();
 				byte[] copyOfBody = StreamUtils.copyToByteArray(requestInputStream);
-				String charSet = request.getCharacterEncoding();
-				flatBody = new String(copyOfBody, charSet);
+				flatBody = new String(copyOfBody, "UTF-8");
 			} 
 	    	catch (Exception e) {
-				LogService.logger.error( "afterCompletion() throws Exception", e);
+				LogService.logger.error( "preHandle() throws Exception", e);
 			}
 			try {
 				JsonNode nodeBody = objectMapper.readTree(flatBody);
@@ -54,22 +64,11 @@ public class LogService extends HandlerInterceptorAdapter
 		    	LogService.logger.error( "preHandle() throws JsonProcessingException", e);
 			}
     	}
-		else
-		{
-	    	// GET PARAMETERS
-	    	Map<String, String[]> parameterList = request.getParameterMap();
-	        parameters = new StringBuilder("{");
-	        for (String key : parameterList.keySet()) {
-	        	parameters.append(key + "=" + parameterList.get(key) + ", ");
-	        }
-	        if (parameters.length()>2) parameters.delete(parameters.length()-2, parameters.length());
-	        parameters.append("}");
-		}
 		// WRITE LOG
     	LogService.logger.info( "\nREQUEST received\nMETHOD:" + request.getMethod() 
     				+ "\nURL:" + request.getRequestURL() 
     				+ "\nQUERY:" + request.getQueryString()
-					+ "\nPARAMETERS:" + parameters
+					+ "\nFORM:" + parameters
 					+ "\nJSON:" + indentedBody);
 		return true;
     }

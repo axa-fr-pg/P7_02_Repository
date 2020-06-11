@@ -30,8 +30,7 @@ public class UserSecurityDetails implements UserDetailsService
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
         		user.getUsername(), user.getPassword(), Arrays.asList(authority));
         return userDetails;
-    }
-    
+    }    
     
 	@Bean // This method is used during login to check if the password is correct
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

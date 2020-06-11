@@ -65,9 +65,9 @@ public abstract class EntityControllerIT<E,F>
 	protected int numberOfEntityFieldsToValidate;
 	
 	@SuppressWarnings("unchecked")
-	private E saveNewTestEntityToRepository(int index)
+	private E insertNewTestEntityIntoDatabase(int index)
 	{
-		return entityRepository.save((E)entityCore.newValidTestEntityWithGivenId(index));
+		return entityRepository.save((E)entityCore.newValidTestEntityWithIdZero(index));
 	}
 
 	private void prepareDatabase()
@@ -104,9 +104,9 @@ public abstract class EntityControllerIT<E,F>
 	public void givenEntityList_readAll_returnsCorrectList() throws Exception 
 	{
 		// GIVEN
-		E e1 =  saveNewTestEntityToRepository(2);
-		E e2 =  saveNewTestEntityToRepository(3);
-		E e3 =  saveNewTestEntityToRepository(4);
+		E e1 =  insertNewTestEntityIntoDatabase(2);
+		E e2 =  insertNewTestEntityIntoDatabase(3);
+		E e3 =  insertNewTestEntityIntoDatabase(4);
 		// WHEN
 		String responseString = mvc.perform(get(entityRootRequestMapping+"/list")).andDo(print()).andReturn().getResponse().getContentAsString();
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, entityCore.toForm().getClass());
@@ -169,7 +169,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenCorrectForm_put_returnsUpdatedEntity() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(2);
+		EntityCore<F> givenEntity =  (EntityCore<F>) insertNewTestEntityIntoDatabase(2);
 		FormCore<E> givenForm = (FormCore<E>) givenEntity.toForm();
 		Integer id = givenForm.id();
 		String json = objectMapper.writeValueAsString((F) givenForm);
@@ -206,7 +206,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenValidId_read_returnsCorrectForm() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(2);
+		EntityCore<F> givenEntity =  (EntityCore<F>) insertNewTestEntityIntoDatabase(2);
 		FormCore<E> givenForm = (FormCore<E>) givenEntity.toForm();
 		Integer id = givenForm.id();
 		// WHEN & THEN
@@ -236,7 +236,7 @@ public abstract class EntityControllerIT<E,F>
 	public void givenValidId_delete_removesEntity() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity =  (EntityCore<F>) saveNewTestEntityToRepository(2);
+		EntityCore<F> givenEntity =  (EntityCore<F>) insertNewTestEntityIntoDatabase(2);
 		FormCore<E> givenForm = (FormCore<E>) givenEntity.toForm();
 		Integer id = givenForm.id();
 		// WHEN

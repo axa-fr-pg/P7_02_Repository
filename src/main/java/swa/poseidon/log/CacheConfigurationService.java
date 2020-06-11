@@ -13,9 +13,9 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-//@Order(value = Ordered.HIGHEST_PRECEDENCE)
-//@Service
-//@WebFilter(filterName = "CacheConfigurationService", urlPatterns = {"/bids/*","/users/*"})  //TODO compléter
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
+@Service
+@WebFilter(filterName = "CacheConfigurationServiceFilter", urlPatterns = "/*")  
 public class CacheConfigurationService extends OncePerRequestFilter 
 {
     @Override
