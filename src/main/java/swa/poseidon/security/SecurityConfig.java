@@ -18,7 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception 
     {
-        http.csrf().disable() // TODO CSRF ?
+        http
 	    	// Page for user profile registration available to all
 		    .authorizeRequests().antMatchers("/users/add").permitAll()
 		    // Login page available to all

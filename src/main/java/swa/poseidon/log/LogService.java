@@ -1,6 +1,8 @@
 package swa.poseidon.log;
 
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,6 +36,17 @@ public class LogService extends HandlerInterceptorAdapter
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) 
     {	
     	LogService.logger.info( "LogService.preHandle()");
+    	// HEADER
+    	Enumeration<String> headerNames = request.getHeaderNames();
+    	StringBuilder headers = new StringBuilder();
+        if (headerNames != null) 
+        {
+                while (headerNames.hasMoreElements()) 
+                {
+                	headers.append(request.getHeader(headerNames.nextElement()) + "\n");
+                }
+        }
+    	// BODY
         String indentedBody = null;
         StringBuilder parameters = null;
     	if (request.getContentType() == null)
@@ -46,7 +62,7 @@ public class LogService extends HandlerInterceptorAdapter
 		}
 		else
 		{
-	    	// GET BODY
+	    	// GET JSON
 	    	String flatBody="{}";
 	    	try {
 				InputStream requestInputStream = request.getInputStream();
@@ -68,6 +84,7 @@ public class LogService extends HandlerInterceptorAdapter
     	LogService.logger.info( "\nREQUEST received\nMETHOD:" + request.getMethod() 
     				+ "\nURL:" + request.getRequestURL() 
     				+ "\nQUERY:" + request.getQueryString()
+					+ "\nHEADER:" + headers
 					+ "\nFORM:" + parameters
 					+ "\nJSON:" + indentedBody);
 		return true;
@@ -92,6 +109,6 @@ public class LogService extends HandlerInterceptorAdapter
 				+ "\nURL:" + request.getRequestURL() 
 				+ "\nSTATUS:" + response.getStatus()
 				+ "\nJSON:" + indentedBody );
-    }
+    }    
 }
 
