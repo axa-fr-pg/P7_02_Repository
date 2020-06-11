@@ -37,5 +37,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             .and().logout()
             // Use custom user details management
         	.and().userDetailsService(userSecurityDetails);
-            }
+    }
 }

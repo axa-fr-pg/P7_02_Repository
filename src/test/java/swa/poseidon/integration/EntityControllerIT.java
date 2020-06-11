@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -45,10 +45,9 @@ public abstract class EntityControllerIT<E,F>
 	protected MockMvc mvc;
 	
 	@Autowired
-	private WebApplicationContext context;
+	private WebApplicationContext wac;
 
-    @Autowired
-    private FilterChainProxy springSecurityFilterChain;
+    User loginUser;
 
 	@Autowired
 	private UserService userService;
@@ -71,25 +70,33 @@ public abstract class EntityControllerIT<E,F>
 		return entityRepository.save((E)entityCore.newValidTestEntityWithGivenId(index));
 	}
 
-	@BeforeEach
-	public void authenticate() throws Exception
+	private void prepareDatabase()
 	{
-		// ENTITY CLEANUP
 		entityRepository.deleteAll();
-		// USER TABLE PREPARATION
 		userRepository.deleteAll();
-		User user = (User) (new User()).newValidTestEntityWithIdZero(1);
-		UserFormWithPassword form = user.toFormWithPassword();		
+		loginUser = (User) (new User()).newValidTestEntityWithIdZero(1);
+		UserFormWithPassword form = loginUser.toFormWithPassword();		
 		userService.createByFormWithPassword(form);
-		// LOGIN
-		mvc = MockMvcBuilders.webAppContextSetup(context).addFilters(springSecurityFilterChain).build();
+	}
+
+	private void authenticate() throws Exception
+	{
+		mvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
 		SecurityContext securityContext = (SecurityContext) mvc
-				.perform(formLogin("/processPoseidonLogin").user(user.getUsername()).password(user.getPassword()))
+				.perform(formLogin("/processPoseidonLogin")
+							.user(loginUser.getUsername())
+							.password(loginUser.getPassword()))
 				.andExpect(authenticated())
 				.andReturn().getRequest().getSession()
 				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-		// STORE LOGIN STATUS IN CONTEXT
 		SecurityContextHolder.setContext(securityContext);
+	}
+	
+	@BeforeEach
+	public void setup() throws Exception
+	{
+		prepareDatabase();
+		authenticate();
 	}
 
 	@Test
@@ -120,9 +127,10 @@ public abstract class EntityControllerIT<E,F>
 	public void givenValidForm_post_returnsCreatedEntity() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(2);
+		int index = 2;
+		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(index);
 		F givenForm = givenEntity.toForm();
-		EntityCore<F> expectedEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(2);
+		EntityCore<F> expectedEntity = (EntityCore<F>) entityCore.newValidTestEntityWithIdZero(index);
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(entityRootRequestMapping+"/add")
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
@@ -181,10 +189,11 @@ public abstract class EntityControllerIT<E,F>
 	public void givenInvalidId_put_throwsNoSuchElementException() throws Exception 
 	{
 		// GIVEN
-		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithGivenId(2);
+		int index = 2;
+		EntityCore<F> givenEntity = (EntityCore<F>) entityCore.newValidTestEntityWithGivenId(index);
 		F givenForm = givenEntity.toForm();
 		String json = objectMapper.writeValueAsString(givenForm);
-		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put(entityRootRequestMapping+"/update/" + 1)
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put(entityRootRequestMapping+"/update/" + index)
 			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
 		// WHEN
 		String responseString = mvc.perform(builder).andDo(print()).andReturn().getResponse().getContentAsString();
