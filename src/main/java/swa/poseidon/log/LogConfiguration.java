@@ -13,13 +13,10 @@ public class LogConfiguration implements WebMvcConfigurer
     @Autowired
     private LogService logService;
 
-	@Value("${poseidon.environment.production}")
-	private boolean isProductionEnvironment;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) 
     {
 		LogService.logger.debug( "addInterceptors()" );
-		if (isProductionEnvironment) registry.addInterceptor(logService);
+		registry.addInterceptor(logService);
     }
 }

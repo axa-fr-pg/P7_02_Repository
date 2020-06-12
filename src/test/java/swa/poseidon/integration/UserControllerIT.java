@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import swa.poseidon.controllers.ExceptionManager;
 import swa.poseidon.form.UserForm;
 import swa.poseidon.form.UserFormWithPassword;
+import swa.poseidon.log.CacheConfigurationService;
 import swa.poseidon.model.User;
 import swa.poseidon.repositories.UserRepository;
 import swa.poseidon.services.UserService;
@@ -80,7 +81,7 @@ public class UserControllerIT
 	
 	private void authenticate() throws Exception
 	{
-		mvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+		mvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).addFilters(new CacheConfigurationService()).build();
 		SecurityContext securityContext = (SecurityContext) mvc
 				.perform(formLogin("/processPoseidonLogin")
 							.user(loginUser.getUsername())
