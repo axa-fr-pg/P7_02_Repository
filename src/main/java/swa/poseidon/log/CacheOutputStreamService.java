@@ -11,20 +11,20 @@ public class CacheOutputStreamService extends ServletOutputStream
     private ByteArrayOutputStream cache;
     
     public CacheOutputStreamService(ServletOutputStream stream, ByteArrayOutputStream cache) {
-		LogService.logger.info( "new CacheOutputStreamService()" );
+		LogService.logger.debug( "new CacheOutputStreamService()" );
         this.stream = stream;
         this.cache = cache;
     }
 
     @Override
     public boolean isReady() {
-		LogService.logger.info( "CacheOutputStreamService.isReady()" );
+		LogService.logger.debug( "CacheOutputStreamService.isReady()" );
         return true;
     }
 
 	@Override
 	public void setWriteListener(WriteListener listener) {
-		LogService.logger.info( "CacheOutputStreamService.setWriteListener()" );
+		LogService.logger.debug( "CacheOutputStreamService.setWriteListener()" );
 		throw new UnsupportedOperationException();
 	}
 

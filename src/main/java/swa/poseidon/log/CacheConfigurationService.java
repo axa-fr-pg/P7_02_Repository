@@ -22,7 +22,7 @@ public class CacheConfigurationService extends OncePerRequestFilter
     protected void doFilterInternal(HttpServletRequest httpServletRequest, 
     		HttpServletResponse httpServletResponse, FilterChain filterChain) 
     				throws ServletException, IOException {
-		LogService.logger.info( "CacheConfigurationService.doFilterInternal()" );
+		LogService.logger.debug( "CacheConfigurationService.doFilterInternal()" );
         CacheRequestService cacheRequest = new CacheRequestService(httpServletRequest);
         CacheResponseService cacheResponse = new CacheResponseService(httpServletResponse);
         filterChain.doFilter(cacheRequest, cacheResponse);

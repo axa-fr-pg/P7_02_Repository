@@ -33,10 +33,10 @@ public class CacheRequestService extends HttpServletRequestWrapper
     public CacheRequestService(HttpServletRequest request) throws IOException 
     {
         super(request);
-		LogService.logger.info( "new CacheRequestService()" );
+		LogService.logger.debug( "new CacheRequestService()" );
         InputStream requestInputStream = request.getInputStream();
         streamContentCache = StreamUtils.copyToByteArray(requestInputStream);
-        LogService.logger.info("CACHE CONTENT: " + toString());
+        LogService.logger.debug("CACHE CONTENT: " + toString());
 		parameterMap = getParameterMapFromBody();
     }
     
@@ -61,14 +61,14 @@ public class CacheRequestService extends HttpServletRequestWrapper
   
     @Override
     public ServletInputStream getInputStream() throws IOException {
-		LogService.logger.info( "CacheRequestService.getInputStream()" );
+		LogService.logger.debug( "CacheRequestService.getInputStream()" );
         return new CacheInputStreamService(streamContentCache);
     }
     
     @Override
     public String toString() 
     {
-		LogService.logger.info( "CacheRequestService.toString()" );
+		LogService.logger.debug( "CacheRequestService.toString()" );
         try {
             return new String(streamContentCache, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

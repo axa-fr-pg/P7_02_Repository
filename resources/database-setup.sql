@@ -2,107 +2,204 @@ drop database if exists poseidon_prod;
 create database poseidon_prod;
 use poseidon_prod;
 
-CREATE TABLE bid (
-  bid_id int NOT NULL AUTO_INCREMENT,
-  account VARCHAR(30) NOT NULL,
-  type VARCHAR(30) NOT NULL,
-  bid_quantity DOUBLE,
-  ask_quantity DOUBLE,
-  bid_amount DOUBLE ,
-  ask_amount DOUBLE,
-  benchmark VARCHAR(125),
-  bidListDate TIMESTAMP,
-  commentary VARCHAR(125),
-  security VARCHAR(125),
-  status VARCHAR(10),
-  trader VARCHAR(125),
-  book VARCHAR(125),
-  creationName VARCHAR(125),
-  creationDate TIMESTAMP ,
-  revisionName VARCHAR(125),
-  revisionDate TIMESTAMP ,
-  dealName VARCHAR(125),
-  dealType VARCHAR(125),
-  sourceListId VARCHAR(125),
-  side VARCHAR(125),
-
-  PRIMARY KEY (BidListId)
+CREATE TABLE `bid` (
+  `bid_id` int NOT NULL AUTO_INCREMENT,
+  `account` varchar(30) DEFAULT NULL,
+  `ask_amount` decimal(8,2) DEFAULT NULL,
+  `ask_quantity` decimal(8,1) DEFAULT NULL,
+  `benchmark` varchar(125) DEFAULT NULL,
+  `bid_amount` decimal(8,2) DEFAULT NULL,
+  `bid_quantity` decimal(8,1) DEFAULT NULL,
+  `book` varchar(125) DEFAULT NULL,
+  `comment` varchar(125) DEFAULT NULL,
+  `creation_date` timestamp NULL DEFAULT NULL,
+  `creation_name` varchar(125) DEFAULT NULL,
+  `deal_name` varchar(125) DEFAULT NULL,
+  `deal_type` varchar(125) DEFAULT NULL,
+  `revision_date` timestamp NULL DEFAULT NULL,
+  `revision_name` varchar(125) DEFAULT NULL,
+  `security` varchar(125) DEFAULT NULL,
+  `side` varchar(125) DEFAULT NULL,
+  `source_list_id` int DEFAULT NULL,
+  `status` tinyint DEFAULT NULL,
+  `trader` varchar(125) DEFAULT NULL,
+  `type` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`bid_id`)
 );
 
-CREATE TABLE Trade (
-  TradeId tinyint(4) NOT NULL AUTO_INCREMENT,
-  account VARCHAR(30) NOT NULL,
-  type VARCHAR(30) NOT NULL,
-  buyQuantity DOUBLE,
-  sellQuantity DOUBLE,
-  buyPrice DOUBLE ,
-  sellPrice DOUBLE,
-  tradeDate TIMESTAMP,
-  security VARCHAR(125),
-  status VARCHAR(10),
-  trader VARCHAR(125),
-  benchmark VARCHAR(125),
-  book VARCHAR(125),
-  creationName VARCHAR(125),
-  creationDate TIMESTAMP ,
-  revisionName VARCHAR(125),
-  revisionDate TIMESTAMP ,
-  dealName VARCHAR(125),
-  dealType VARCHAR(125),
-  sourceListId VARCHAR(125),
-  side VARCHAR(125),
-
-  PRIMARY KEY (TradeId)
+CREATE TABLE `curve_point` (
+  `curve_point_id` int NOT NULL AUTO_INCREMENT,
+  `creation_date` timestamp NULL DEFAULT NULL,
+  `curve_id` int DEFAULT NULL,
+  `revision_date` timestamp NULL DEFAULT NULL,
+  `term` decimal(8,1) DEFAULT NULL,
+  `value` decimal(8,1) DEFAULT NULL,
+  PRIMARY KEY (`curve_point_id`)
 );
 
-CREATE TABLE CurvePoint (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  CurveId tinyint,
-  asOfDate TIMESTAMP,
-  term DOUBLE ,
-  value DOUBLE ,
-  creationDate TIMESTAMP ,
-
-  PRIMARY KEY (Id)
+CREATE TABLE `rating` (
+  `rating_id` int NOT NULL AUTO_INCREMENT,
+  `fitch_rating` varchar(125) DEFAULT NULL,
+  `moodys_rating` varchar(125) DEFAULT NULL,
+  `order_number` int NOT NULL,
+  `stand_poor_rating` varchar(125) DEFAULT NULL,
+  PRIMARY KEY (`rating_id`)
 );
 
-CREATE TABLE Rating (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  moodysRating VARCHAR(125),
-  sandPRating VARCHAR(125),
-  fitchRating VARCHAR(125),
-  orderNumber tinyint,
-
-  PRIMARY KEY (Id)
+CREATE TABLE `rule` (
+  `rule_id` int NOT NULL AUTO_INCREMENT,
+  `description` varchar(125) DEFAULT NULL,
+  `json` varchar(125) DEFAULT NULL,
+  `name` varchar(125) DEFAULT NULL,
+  `sql_part` varchar(125) DEFAULT NULL,
+  `sql_str` varchar(125) DEFAULT NULL,
+  `template` varchar(125) DEFAULT NULL,
+  PRIMARY KEY (`rule_id`)
 );
 
-CREATE TABLE RuleName (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  name VARCHAR(125),
-  description VARCHAR(125),
-  json VARCHAR(125),
-  template VARCHAR(512),
-  sqlStr VARCHAR(125),
-  sqlPart VARCHAR(125),
-
-  PRIMARY KEY (Id)
+CREATE TABLE `trade` (
+  `trade_id` int NOT NULL AUTO_INCREMENT,
+  `account` varchar(30) DEFAULT NULL,
+  `benchmark` varchar(125) DEFAULT NULL,
+  `book` varchar(125) DEFAULT NULL,
+  `buy_price` decimal(8,2) DEFAULT NULL,
+  `buy_quantity` decimal(8,1) DEFAULT NULL,
+  `creation_date` timestamp NULL DEFAULT NULL,
+  `creation_name` varchar(125) DEFAULT NULL,
+  `deal_name` varchar(125) DEFAULT NULL,
+  `deal_type` varchar(125) DEFAULT NULL,
+  `revision_date` timestamp NULL DEFAULT NULL,
+  `revision_name` varchar(125) DEFAULT NULL,
+  `security` varchar(125) DEFAULT NULL,
+  `sell_price` decimal(8,2) DEFAULT NULL,
+  `sell_quantity` decimal(8,1) DEFAULT NULL,
+  `side` varchar(125) DEFAULT NULL,
+  `source_list_id` int DEFAULT NULL,
+  `status` tinyint DEFAULT NULL,
+  `trade_date` datetime(6) DEFAULT NULL,
+  `trader` varchar(125) DEFAULT NULL,
+  `type` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`trade_id`)
 );
 
-CREATE TABLE Users (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  username VARCHAR(125),
-  password VARCHAR(125),
-  fullname VARCHAR(125),
-  role VARCHAR(125),
-
-  PRIMARY KEY (Id)
+CREATE TABLE `user` (
+  `user_id` int NOT NULL,
+  `fullname` varchar(125) DEFAULT NULL,
+  `password` varchar(125) DEFAULT NULL,
+  `role` tinyint DEFAULT NULL,
+  `username` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `I_username` (`username`)
 );
 
-insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN");
-insert into Users(fullname, username, password, role) values("User", "user", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "USER");
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint DEFAULT NULL
+);
+
+INSERT INTO `poseidon_prod`.`hibernate_sequence`
+(`next_val`)
+VALUES (1);
 
 drop database if exists poseidon_test;
 create database poseidon_test;
 use poseidon_test;
+
+CREATE TABLE `bid` (
+  `bid_id` int NOT NULL AUTO_INCREMENT,
+  `account` varchar(30) DEFAULT NULL,
+  `ask_amount` decimal(8,2) DEFAULT NULL,
+  `ask_quantity` decimal(8,1) DEFAULT NULL,
+  `benchmark` varchar(125) DEFAULT NULL,
+  `bid_amount` decimal(8,2) DEFAULT NULL,
+  `bid_quantity` decimal(8,1) DEFAULT NULL,
+  `book` varchar(125) DEFAULT NULL,
+  `comment` varchar(125) DEFAULT NULL,
+  `creation_date` timestamp NULL DEFAULT NULL,
+  `creation_name` varchar(125) DEFAULT NULL,
+  `deal_name` varchar(125) DEFAULT NULL,
+  `deal_type` varchar(125) DEFAULT NULL,
+  `revision_date` timestamp NULL DEFAULT NULL,
+  `revision_name` varchar(125) DEFAULT NULL,
+  `security` varchar(125) DEFAULT NULL,
+  `side` varchar(125) DEFAULT NULL,
+  `source_list_id` int DEFAULT NULL,
+  `status` tinyint DEFAULT NULL,
+  `trader` varchar(125) DEFAULT NULL,
+  `type` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`bid_id`)
+);
+
+CREATE TABLE `curve_point` (
+  `curve_point_id` int NOT NULL AUTO_INCREMENT,
+  `creation_date` timestamp NULL DEFAULT NULL,
+  `curve_id` int DEFAULT NULL,
+  `revision_date` timestamp NULL DEFAULT NULL,
+  `term` decimal(8,1) DEFAULT NULL,
+  `value` decimal(8,1) DEFAULT NULL,
+  PRIMARY KEY (`curve_point_id`)
+);
+
+CREATE TABLE `rating` (
+  `rating_id` int NOT NULL AUTO_INCREMENT,
+  `fitch_rating` varchar(125) DEFAULT NULL,
+  `moodys_rating` varchar(125) DEFAULT NULL,
+  `order_number` int NOT NULL,
+  `stand_poor_rating` varchar(125) DEFAULT NULL,
+  PRIMARY KEY (`rating_id`)
+);
+
+CREATE TABLE `rule` (
+  `rule_id` int NOT NULL AUTO_INCREMENT,
+  `description` varchar(125) DEFAULT NULL,
+  `json` varchar(125) DEFAULT NULL,
+  `name` varchar(125) DEFAULT NULL,
+  `sql_part` varchar(125) DEFAULT NULL,
+  `sql_str` varchar(125) DEFAULT NULL,
+  `template` varchar(125) DEFAULT NULL,
+  PRIMARY KEY (`rule_id`)
+);
+
+CREATE TABLE `trade` (
+  `trade_id` int NOT NULL AUTO_INCREMENT,
+  `account` varchar(30) DEFAULT NULL,
+  `benchmark` varchar(125) DEFAULT NULL,
+  `book` varchar(125) DEFAULT NULL,
+  `buy_price` decimal(8,2) DEFAULT NULL,
+  `buy_quantity` decimal(8,1) DEFAULT NULL,
+  `creation_date` timestamp NULL DEFAULT NULL,
+  `creation_name` varchar(125) DEFAULT NULL,
+  `deal_name` varchar(125) DEFAULT NULL,
+  `deal_type` varchar(125) DEFAULT NULL,
+  `revision_date` timestamp NULL DEFAULT NULL,
+  `revision_name` varchar(125) DEFAULT NULL,
+  `security` varchar(125) DEFAULT NULL,
+  `sell_price` decimal(8,2) DEFAULT NULL,
+  `sell_quantity` decimal(8,1) DEFAULT NULL,
+  `side` varchar(125) DEFAULT NULL,
+  `source_list_id` int DEFAULT NULL,
+  `status` tinyint DEFAULT NULL,
+  `trade_date` datetime(6) DEFAULT NULL,
+  `trader` varchar(125) DEFAULT NULL,
+  `type` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`trade_id`)
+);
+
+CREATE TABLE `user` (
+  `user_id` int NOT NULL,
+  `fullname` varchar(125) DEFAULT NULL,
+  `password` varchar(125) DEFAULT NULL,
+  `role` tinyint DEFAULT NULL,
+  `username` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `I_username` (`username`)
+);
+
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint DEFAULT NULL
+);
+
+INSERT INTO `poseidon_prod`.`hibernate_sequence`
+(`next_val`)
+VALUES (1);
 
 commit;

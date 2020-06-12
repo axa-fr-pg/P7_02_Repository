@@ -31,8 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             .loginProcessingUrl("/processPoseidonLogin")
             // Use custom home page
             .defaultSuccessUrl("/home.html")
-            // Use custom failure page
-            .failureUrl("/accessDenied")
             // Use default logout controller
             .and().logout()
             // Use custom user details management

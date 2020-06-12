@@ -2,7 +2,6 @@ package swa.poseidon.log;
 
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,7 +31,7 @@ public class LogService extends HandlerInterceptorAdapter
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) 
     {	
-    	LogService.logger.info( "LogService.preHandle()");
+    	LogService.logger.debug( "LogService.preHandle()");
     	// HEADER
     	Enumeration<String> headerNames = request.getHeaderNames();
     	StringBuilder headers = new StringBuilder();
@@ -43,7 +39,8 @@ public class LogService extends HandlerInterceptorAdapter
         {
                 while (headerNames.hasMoreElements()) 
                 {
-                	headers.append(request.getHeader(headerNames.nextElement()) + "\n");
+                	String headerName = headerNames.nextElement();
+                	headers.append(headerName + "=" + request.getHeader(headerName) + "\n");
                 }
         }
     	// BODY
@@ -93,7 +90,7 @@ public class LogService extends HandlerInterceptorAdapter
     @Override
     public void postHandle( HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)  
     {
-    	LogService.logger.info( "LogService.postHandle()");
+    	LogService.logger.debug( "LogService.postHandle()");
      	CacheResponseService cacheResponseService = WebUtils.getNativeResponse(response, CacheResponseService.class);;
     	String flatBody="{}";
     	if (cacheResponseService != null) flatBody=cacheResponseService.toString();  	    	    	

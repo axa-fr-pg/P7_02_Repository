@@ -15,14 +15,14 @@ public class CacheResponseService extends HttpServletResponseWrapper
     public CacheResponseService(HttpServletResponse response) 
     {
         super(response);
-		LogService.logger.info( "new CacheResponseService()" );
+		LogService.logger.debug( "new CacheResponseService()" );
 		stream = new ByteArrayOutputStream();
 		charSet = response.getCharacterEncoding();
     }
 
     @Override
     public String toString() {
-		LogService.logger.info( "CacheResponseService.toString()" );
+		LogService.logger.debug( "CacheResponseService.toString()" );
         try {
 			return stream.toString(charSet);
 		} catch (UnsupportedEncodingException e) {
@@ -33,7 +33,7 @@ public class CacheResponseService extends HttpServletResponseWrapper
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-		LogService.logger.info( "CacheResponseService.getOutputStream()" );
+		LogService.logger.debug( "CacheResponseService.getOutputStream()" );
         return new CacheOutputStreamService(super.getOutputStream(), stream);
     }
 }
