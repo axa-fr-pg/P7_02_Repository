@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -106,7 +106,9 @@ public class UserControllerIT
 		User e2 =  insertNewTestEntityIntoDatabase(3);
 		User e3 =  insertNewTestEntityIntoDatabase(4);
 		// WHEN
-		String responseString = mvc.perform(get(entityRootRequestMapping+"/list")).andDo(print()).andReturn().getResponse().getContentAsString();
+		String responseString = mvc.perform(get(entityRootRequestMapping+"/list"))
+				//.andDo(print())
+				.andReturn().getResponse().getContentAsString();
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, UserForm.class);
 		List<UserForm> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
@@ -132,9 +134,10 @@ public class UserControllerIT
 		User expectedEntity = (User) entityCore.newValidTestEntityWithIdZero(index);
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(entityRootRequestMapping+"/add")
-			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON).with(csrf());
 		// WHEN & THEN
-		String responseString = mvc.perform(builder).andDo(print())
+		String responseString = mvc.perform(builder)
+				//.andDo(print())
 				.andExpect(status().isCreated())
 				.andReturn().getResponse().getContentAsString();
 		Object responseObject = objectMapper.readValue(responseString, givenForm.getClass());
@@ -152,9 +155,10 @@ public class UserControllerIT
 		UserFormWithPassword givenForm = givenUser.toFormWithPassword();
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(entityRootRequestMapping+"/add")
-			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON).with(csrf());
 		// WHEN & THEN
-		String responseString = mvc.perform(builder).andDo(print())
+		String responseString = mvc.perform(builder)
+			//.andDo(print())
 			.andExpect(status().isBadRequest())
 			.andReturn().getResponse().getContentAsString();
 		@SuppressWarnings("unchecked")
@@ -181,9 +185,10 @@ public class UserControllerIT
 		Integer id = givenForm.id();
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put(entityRootRequestMapping+"/update/" + id)
-			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON).with(csrf());
 		// WHEN & THEN
-		String responseString = mvc.perform(builder).andDo(print())
+		String responseString = mvc.perform(builder)
+				//.andDo(print())
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString();
 		Object responseObject = objectMapper.readValue(responseString, givenForm.getClass());
@@ -201,9 +206,11 @@ public class UserControllerIT
 		UserFormWithPassword givenForm = (UserFormWithPassword) givenUser.toFormWithPassword();
 		String json = objectMapper.writeValueAsString(givenForm);
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put(entityRootRequestMapping+"/update/" + index)
-			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON);
+			.contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON).with(csrf());
 		// WHEN
-		String responseString = mvc.perform(builder).andDo(print()).andReturn().getResponse().getContentAsString();
+		String responseString = mvc.perform(builder)
+				//.andDo(print())
+				.andReturn().getResponse().getContentAsString();
 		// THEN
 		assertEquals(ExceptionManager.MESSAGE_NOT_SUCH_ELEMENT, responseString);
 	}
@@ -215,7 +222,8 @@ public class UserControllerIT
 		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		Integer id = givenUser.getUserId();
 		// WHEN & THEN
-		String responseString = mvc.perform(get(entityRootRequestMapping+"/read/"+id)).andDo(print())
+		String responseString = mvc.perform(get(entityRootRequestMapping+"/read/"+id))
+				//.andDo(print())
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString();
 		Object responseObject = objectMapper.readValue(responseString, UserForm.class);
@@ -231,7 +239,8 @@ public class UserControllerIT
 		Integer id = 999;
 		// WHEN 
 		String responseString = mvc.perform(get(entityRootRequestMapping+"/read/"+id))
-				.andDo(print()).andReturn().getResponse().getContentAsString();
+				//.andDo(print())
+				.andReturn().getResponse().getContentAsString();
 		// THEN
 		assertEquals(ExceptionManager.MESSAGE_NOT_SUCH_ELEMENT, responseString);
 	}	
@@ -243,8 +252,9 @@ public class UserControllerIT
 		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		Integer id = givenUser.getUserId();
 		// WHEN
-		String responseString = mvc.perform(delete(entityRootRequestMapping+"/delete/"+id))
-				.andDo(print()).andReturn().getResponse().getContentAsString();
+		String responseString = mvc.perform(delete(entityRootRequestMapping+"/delete/"+id).with(csrf()))				
+				//.andDo(print())
+				.andReturn().getResponse().getContentAsString();
 		Boolean responseObject = objectMapper.readValue(responseString, Boolean.class);
 		// THEN
 		assertTrue(responseObject);
@@ -256,8 +266,9 @@ public class UserControllerIT
 		// GIVEN
 		Integer id = 999;
 		// WHEN 
-		String responseString = mvc.perform(delete(entityRootRequestMapping+"/delete/"+id))
-				.andDo(print()).andReturn().getResponse().getContentAsString();
+		String responseString = mvc.perform(delete(entityRootRequestMapping+"/delete/"+id).with(csrf()))
+				//.andDo(print())
+				.andReturn().getResponse().getContentAsString();
 		// THEN
 		assertEquals(ExceptionManager.MESSAGE_NOT_SUCH_ELEMENT, responseString);
 	}
@@ -270,7 +281,8 @@ public class UserControllerIT
 		User givenUser =  insertNewTestEntityIntoDatabase(2);
 		Integer id = givenUser.getUserId();
 		// WHEN
-		mvc.perform(delete(entityRootRequestMapping+"/delete/"+id)).andDo(print())
+		mvc.perform(delete(entityRootRequestMapping+"/delete/"+id).with(csrf()))
+			//.andDo(print())
 		// THEN
 			.andExpect(status().is3xxRedirection());
 	}

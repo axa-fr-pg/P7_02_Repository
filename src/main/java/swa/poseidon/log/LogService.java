@@ -3,6 +3,7 @@ package swa.poseidon.log;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,8 +52,8 @@ public class LogService extends HandlerInterceptorAdapter
 	    	// GET URLENCODED FORM
 	    	Map<String, String[]> parameterList = request.getParameterMap();
 	        parameters = new StringBuilder("{");
-	        for (String key : parameterList.keySet()) {
-	        	parameters.append(key + "=" + parameterList.get(key) + ", ");
+	        for (Entry<String, String[]> entry : parameterList.entrySet()) {
+	        	parameters.append(entry.getKey() + "=" + entry.getValue() + ", ");
 	        }
 	        if (parameters.length()>2) parameters.delete(parameters.length()-2, parameters.length());
 	        parameters.append("}");

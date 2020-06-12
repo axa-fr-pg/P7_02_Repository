@@ -96,7 +96,7 @@ CREATE TABLE `hibernate_sequence` (
   `next_val` bigint DEFAULT NULL
 );
 
-INSERT INTO `poseidon_prod`.`hibernate_sequence`
+INSERT INTO `hibernate_sequence`
 (`next_val`)
 VALUES (1);
 
@@ -198,7 +198,7 @@ CREATE TABLE `hibernate_sequence` (
   `next_val` bigint DEFAULT NULL
 );
 
-INSERT INTO `poseidon_prod`.`hibernate_sequence`
+INSERT INTO `hibernate_sequence`
 (`next_val`)
 VALUES (1);
 
